@@ -26,18 +26,13 @@ public class LoginController {
         // 获取当前的用户的 Subject，shiro
         Subject currentUser = SecurityUtils.getSubject();
         // 判断用户是否已经登陆
-        if (currentUser != null && !currentUser.isAuthenticated()) {
-            // 执行登陆操作
-            try {
-                //会调用realms/UserAuthorizingRealm中的doGetAuthenticationInfo方法
-                currentUser.login(token);
-                log.info("[登录内部错误！请联系管理员检查！]-[{}]", new Date());
-            } catch (Exception e) {
-                token.clear();
-                return ResultUtil.error("登录失败");
-            }
-        } else {
-            return ResultUtil.error("用户已登录");
+        // 执行登陆操作
+        try {
+            //会调用realms/UserAuthorizingRealm中的doGetAuthenticationInfo方法
+            currentUser.login(token);
+        } catch (Exception e) {
+            token.clear();
+            return ResultUtil.error("登录失败");
         }
         log.info("[登录成功]-[{}]", username);
         return ResultUtil.success("登录成功");

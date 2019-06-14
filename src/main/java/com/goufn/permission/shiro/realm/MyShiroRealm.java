@@ -6,11 +6,14 @@ import com.goufn.permission.service.RoleService;
 import com.goufn.permission.service.UserService;
 import com.goufn.permission.utils.PasswordUtil;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
@@ -59,7 +62,6 @@ public class MyShiroRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         //获取用户的输入的账号.
         String username = token.getUsername();
-        String password = new String(token.getPassword());
         System.out.println(token.getCredentials());
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
@@ -68,15 +70,22 @@ public class MyShiroRealm extends AuthorizingRealm {
         if(user == null){
             throw new AuthenticationException();
         }
-        String passwordInDB = user.getPassword();
-        String salt = user.getSalt();
-        String passwordEncoded = new SimpleHash(PasswordUtil.algorithmName,
-                password,salt,PasswordUtil.hashIterations).toString();
-        if (!passwordEncoded.equals(passwordInDB)) {
-            throw new AuthenticationException();
-        }
         //认证信息里存放账号密码, getName() 是当前Realm的继承方法,通常返回当前类名 :databaseRealm
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(username, password, getName());
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+                user,
+                user.getPassword(),
+                ByteSource.Util.bytes(user.getSalt()),
+                getName()
+        );
         return authenticationInfo;
+    }
+
+    @Override
+    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
+        //HashedCredentialsMatcher是shiro提供的解析盐的实现类
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        matcher.setHashAlgorithmName(PasswordUtil.algorithmName);
+        matcher.setHashIterations(PasswordUtil.hashIterations);
+        super.setCredentialsMatcher(matcher);
     }
 }
