@@ -1,5 +1,6 @@
 package com.goufn.permission.controller;
 
+import com.goufn.permission.common.dto.URL;
 import com.goufn.permission.common.result.CommonResult;
 import com.goufn.permission.common.result.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 
 @RestController
@@ -35,7 +35,7 @@ public class LoginController {
             return ResultUtil.error("登录失败");
         }
         log.info("[登录成功]-[{}]", username);
-        return ResultUtil.success("登录成功");
+        return ResultUtil.success("登录成功", new URL("/index"));
     }
 
     @GetMapping("/logout")

@@ -1,6 +1,6 @@
 package com.goufn.permission.shiro.config;
 
-import com.goufn.permission.entity.User;
+import com.goufn.permission.entity.SysUser;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
@@ -29,7 +29,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
                                      ServletResponse response) throws Exception {
         // TODO Auto-generated method stub
 
-        User activeUser = (User) subject.getPrincipal();
+        SysUser activeUser = (SysUser) subject.getPrincipal();
 
         HttpServletRequest request2 = (HttpServletRequest) request;
         HttpServletResponse response2 = (HttpServletResponse) response;

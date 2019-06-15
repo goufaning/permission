@@ -1,6 +1,6 @@
 package com.goufn.permission.shiro.realm;
 
-import com.goufn.permission.entity.User;
+import com.goufn.permission.entity.SysUser;
 import com.goufn.permission.service.PermissionService;
 import com.goufn.permission.service.RoleService;
 import com.goufn.permission.service.UserService;
@@ -10,7 +10,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -36,7 +35,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        User user = (User)principals.getPrimaryPrincipal();
+        SysUser user = (SysUser)principals.getPrimaryPrincipal();
         Set<String> roles = roleService.findRoleByUserId(user.getId());
         Set<String> permissions = permissionService.findPermsByUserId(user.getId());
         authorizationInfo.setRoles(roles);
@@ -65,7 +64,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println(token.getCredentials());
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        User user = userService.getUserInfo(username);
+        SysUser user = userService.getUserInfo(username);
         System.out.println("----->>user="+ user);
         if(user == null){
             throw new AuthenticationException();

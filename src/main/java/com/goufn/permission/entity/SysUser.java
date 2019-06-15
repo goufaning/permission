@@ -5,10 +5,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class User {
+public class SysUser {
     private int id;
-    /** 扩展的id **/
-    private String userId;
     /** 用户名 **/
     private String username;
     /** 密码 **/
@@ -19,10 +17,8 @@ public class User {
     private String email;
     /** 联系方式 **/
     private String phone;
-    /** 性别：1男2女3未知 **/
+    /** 性别：1男2女0未知 **/
     private Integer sex;
-    /** 年龄 **/
-    private Integer age;
     /** 用户状态：1有效2删除 **/
     private Integer status;
     /** 最后登陆时间 **/

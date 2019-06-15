@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.goufn.permission.mapper.RoleMapper">
-    <resultMap id="roleMap" type="com.goufn.permission.entity.Role">
+    <resultMap id="roleMap" type="com.goufn.permission.entity.SysRole">
         <id property="id" column="id"></id>
         <result property="roleId" column="role_id"/>
         <result property="role" column="role"/>
@@ -13,8 +13,8 @@
     <select id="findRoleByUserId" parameterType="java.lang.Integer" resultType="java.lang.String">
         select
         r.role,
-        from role r
-        LEFT JOIN user_role ur on r.id = ur.role_id
+        from sys_role r
+        LEFT JOIN sys_user_role ur on r.id = ur.role_id
         where ur.userId=#{userId}
     </select>
 

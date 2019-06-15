@@ -31,5 +31,10 @@ public class ResultUtil {
 
     public static CommonResult success(String message) {
         return result(ResultCode.SUCCESS.getCode(), message, null);
+
+    }
+
+    public static CommonResult success(String message, Object data) {
+        return result(ResultCode.SUCCESS.getCode(), message, data);
     }
 }

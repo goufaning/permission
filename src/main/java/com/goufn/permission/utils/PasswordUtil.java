@@ -1,6 +1,6 @@
 package com.goufn.permission.utils;
 
-import com.goufn.permission.entity.User;
+import com.goufn.permission.entity.SysUser;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -22,7 +22,7 @@ public class PasswordUtil {
      * 使用盐加密密码
      * @param user
      */
-    public static void encryptPassword(User user){
+    public static void encryptPassword(SysUser user){
         // 随机盐
         String salt = randomNumberGenerator.nextBytes().toString();
         user.setSalt(salt);

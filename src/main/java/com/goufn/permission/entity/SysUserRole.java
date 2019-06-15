@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class UserRole {
+public class SysUserRole {
     private int vid;
 
     private int userId;

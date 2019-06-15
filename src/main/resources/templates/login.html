@@ -41,7 +41,6 @@
 				<p class="copyright">Copyright 2015-2016 by IAODU</p>
 			</div>
 		</div>
-		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="layui/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			layui.use(['form'], function() {
@@ -59,15 +58,15 @@
 								offset: '30%',
 								time: 800
 							});
+                            setTimeout(function () {
+                                location.href = data.data.url;
+                            }, 800);
 						}else{
 							layer.msg("<em style='color:red'>"+data.message+"</em>", {
 								icon: 2,
 								offset: '30%',
 								time: 2000
 							});
-                            setTimeout(function () {
-                                location.href = data.data.url;
-                            }, 2000);
 						}
 					} )
 				});

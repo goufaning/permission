@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.goufn.permission.mapper.PermissionMapper">
     <!--低调小熊猫专用-->
-    <resultMap id="resourceMap" type="com.goufn.permission.entity.Permission">
+    <resultMap id="resourceMap" type="com.goufn.permission.entity.SysPermission">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="description" column="description"/>
@@ -16,9 +16,9 @@
     <select id="findPermsByUserId" parameterType="java.lang.Integer" resultType="java.lang.String">
         select
         DISTINCT p.permission
-        from permission p
-        LEFT JOIN role_permission rp ON p.id=rp.permissionId
-        LEFT JOIN user_role ur on rp.roleId = ur.roleId
+        from sys_permission p
+        LEFT JOIN sys_role_permission rp ON p.id=rp.permissionId
+        LEFT JOIN sys_user_role ur on rp.roleId = ur.roleId
         WHERE ur.userId=#{userId} and p.permission is not null and p.permission!='' and p.status=1
     </select>
 </mapper>

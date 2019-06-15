@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class RolePermission {
+public class SysRolePermission {
     private int id;
 
     private int userId;

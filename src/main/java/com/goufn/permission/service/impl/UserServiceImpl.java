@@ -1,7 +1,7 @@
 package com.goufn.permission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.goufn.permission.entity.User;
+import com.goufn.permission.entity.SysUser;
 import com.goufn.permission.mapper.PermissionMapper;
 import com.goufn.permission.mapper.RoleMapper;
 import com.goufn.permission.mapper.UserMapper;
@@ -24,24 +24,24 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserInfo(Integer userID) {
+    public SysUser getUserInfo(Integer userID) {
         return null;
     }
 
     @Override
-    public User getUserInfo(String userName) {
-        QueryWrapper<User> qryWrapper = new QueryWrapper<>();
+    public SysUser getUserInfo(String userName) {
+        QueryWrapper<SysUser> qryWrapper = new QueryWrapper<>();
         qryWrapper.eq("username", userName);
         return userMapper.selectOne(qryWrapper);
     }
 
     @Override
-    public List<User> getAllUserInfo() {
+    public List<SysUser> getAllUserInfo() {
         return null;
     }
 
     @Override
-    public void updateUserInfo(User user) {
+    public void updateUserInfo(SysUser user) {
 
     }
 
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean insertUserInfo(User user) {
+    public boolean insertUserInfo(SysUser user) {
         return false;
     }
 

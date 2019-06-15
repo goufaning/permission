@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class Permission {
+public class SysPermission {
 
     private Integer id;//主键.
     private String name;//名称.
