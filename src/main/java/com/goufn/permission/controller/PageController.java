@@ -13,19 +13,17 @@ public class PageController {
 
     @RequestMapping("/page/{page}")
     public ModelAndView welcome(@PathVariable String page) {
-        return new ModelAndView(page);
+        return ResultUtil.view("page/" + page);
     }
 
 
     @GetMapping(value = { "/login"})
     public ModelAndView loginView() {
-        System.err.println("login page");
-        return ResultUtil.view("/login");
+        return ResultUtil.view("/page/login/login");
     }
 
     @GetMapping(value = {"/", "/index"})
     public ModelAndView indexView() {
-        System.err.println("index page");
         return ResultUtil.view("/index");
     }
 }

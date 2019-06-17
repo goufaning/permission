@@ -1,5 +1,9 @@
 package com.goufn.permission.service;
 
+import com.goufn.permission.common.vo.MenuVo;
+import com.goufn.permission.entity.SysPermission;
+
+import java.util.List;
 import java.util.Set;
 
 public interface PermissionService {
@@ -11,4 +15,8 @@ public interface PermissionService {
      * @return set
      */
     Set<String> findPermsByUserId(Integer userId);
+
+    List<SysPermission> getChildList(int id);
+
+    List<MenuVo> getMenuList(int userId);
 }

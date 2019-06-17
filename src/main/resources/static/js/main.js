@@ -1,92 +1,98 @@
-layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
-	var layer = layui.layer;
-	var element = layui.element();
-	var form = layui.form();
-	var $ = layui.jquery;
-	var dialog = layui.dialog;
-	var hideBtn = $('#hideBtn');
-	var mainLayout = $('#main-layout');
-	var mainMask = $('.main-mask');
-	//监听导航点击
-	element.on('nav(leftNav)', function(elem) {
-		var navA = $(elem).find('a');
-		var id = navA.attr('data-id');
-		var url = navA.attr('data-url');
-		var text = navA.attr('data-text');
-		if(!url){
-			return;
-		}
-		var isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
-		if(isActive.length > 0) {
-			//切换到选项卡
-			element.tabChange('tab', id);
-		} else {
-			element.tabAdd('tab', {
-				title: text,
-				content: '<iframe src="' + url + '" name="iframe' + id + '" class="iframe" framborder="0" data-id="' + id + '" scrolling="auto" width="100%"  height="100%"></iframe>',
-				id: id
-			});
-			element.tabChange('tab', id);
-			
-		}
-		mainLayout.removeClass('hide-side');
-	});
-	//监听导航点击
-	element.on('nav(rightNav)', function(elem) {
-		var navA = $(elem).find('a');
-		var id = navA.attr('data-id');
-		var url = navA.attr('data-url');
-		var text = navA.attr('data-text');
-		if(!url){
-			return;
-		}
-		var isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
-		if(isActive.length > 0) {
-			//切换到选项卡
-			element.tabChange('tab', id);
-		} else {
-			element.tabAdd('tab', {
-				title: text,
-				content: '<iframe src="' + url + '" name="iframe' + id + '" class="iframe" framborder="0" data-id="' + id + '" scrolling="auto" width="100%"  height="100%"></iframe>',
-				id: id
-			});
-			element.tabChange('tab', id);
-			
-		}
-		mainLayout.removeClass('hide-side');
-	});
-	//菜单隐藏显示
-	hideBtn.on('click', function() {
-		if(!mainLayout.hasClass('hide-side')) {
-			mainLayout.addClass('hide-side');
-		} else {
-			mainLayout.removeClass('hide-side');
-		}
-	});
-	//遮罩点击隐藏
-	mainMask.on('click', function() {
-		mainLayout.removeClass('hide-side');
+layui.config({
+	base : "js/"
+}).use(['form','element','layer','jquery'],function(){
+	var form = layui.form(),
+		layer = parent.layer === undefined ? layui.layer : parent.layer,
+		element = layui.element(),
+		$ = layui.jquery;
+
+	$(".panel a").on("click",function(){
+		window.parent.addTab($(this));
 	})
 
-	//示范一个公告层
-//	layer.open({
-//		  type: 1
-//		  ,title: false //不显示标题栏
-//		  ,closeBtn: false
-//		  ,area: '300px;'
-//		  ,shade: 0.8
-//		  ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-//		  ,resize: false
-//		  ,btn: ['火速围观', '残忍拒绝']
-//		  ,btnAlign: 'c'
-//		  ,moveType: 1 //拖拽模式，0或者1
-//		  ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">后台模版1.1版本今日更新：<br><br><br>数据列表页...<br><br>编辑删除弹出功能<br><br>失去焦点排序功能<br>数据列表页<br>数据列表页<br>数据列表页</div>'
-//		  ,success: function(layero){
-//		    var btn = layero.find('.layui-layer-btn');
-//		    btn.find('.layui-layer-btn0').attr({
-//		      href: 'http://www.layui.com/'
-//		      ,target: '_blank'
-//		    });
-//		  }
-//		});
-});
+	//动态获取文章总数和待审核文章数量,最新文章
+	$.get("../json/newsList.json",
+		function(data){
+			var waitNews = [];
+			$(".allNews span").text(data.length);  //文章总数
+			for(var i=0;i<data.length;i++){
+				var newsStr = data[i];
+				if(newsStr["newsStatus"] == "待审核"){
+					waitNews.push(newsStr);
+				}
+			}
+			$(".waitNews span").text(waitNews.length);  //待审核文章
+			//加载最新文章
+			var hotNewsHtml = '';
+			for(var i=0;i<5;i++){
+				hotNewsHtml += '<tr>'
+		    	+'<td align="left">'+data[i].newsName+'</td>'
+		    	+'<td>'+data[i].newsTime+'</td>'
+		    	+'</tr>';
+			}
+			$(".hot_news").html(hotNewsHtml);
+		}
+	)
+
+	//图片总数
+	$.get("../json/images.json",
+		function(data){
+			$(".imgAll span").text(data.length);
+		}
+	)
+
+	//用户数
+	$.get("../json/usersList.json",
+		function(data){
+			$(".userAll span").text(data.length);
+		}
+	)
+
+	//新消息
+	$.get("../json/message.json",
+		function(data){
+			$(".newMessage span").text(data.length);
+		}
+	)
+
+
+	//数字格式化
+	$(".panel span").each(function(){
+		$(this).html($(this).text()>9999 ? ($(this).text()/10000).toFixed(2) + "<em>万</em>" : $(this).text());	
+	})
+
+	//系统基本参数
+	if(window.sessionStorage.getItem("systemParameter")){
+		var systemParameter = JSON.parse(window.sessionStorage.getItem("systemParameter"));
+		fillParameter(systemParameter);
+	}else{
+		$.ajax({
+			url : "../json/systemParameter.json",
+			type : "get",
+			dataType : "json",
+			success : function(data){
+				fillParameter(data);
+			}
+		})
+	}
+
+	//填充数据方法
+ 	function fillParameter(data){
+ 		//判断字段数据是否存在
+ 		function nullData(data){
+ 			if(data == '' || data == "undefined"){
+ 				return "未定义";
+ 			}else{
+ 				return data;
+ 			}
+ 		}
+ 		$(".version").text(nullData(data.version));      //当前版本
+		$(".author").text(nullData(data.author));        //开发作者
+		$(".homePage").text(nullData(data.homePage));    //网站首页
+		$(".server").text(nullData(data.server));        //服务器环境
+		$(".dataBase").text(nullData(data.dataBase));    //数据库版本
+		$(".maxUpload").text(nullData(data.maxUpload));    //最大上传限制
+		$(".userRights").text(nullData(data.userRights));//当前用户权限
+ 	}
+
+})
