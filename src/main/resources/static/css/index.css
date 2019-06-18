@@ -89,12 +89,12 @@ iframe{ position:absolute; height:100%; width:100%; border:none;}
 
 /*layui-body*/
 .layui-body{overflow:hidden; border-top:5px solid #1AA094;border-left:2px solid #1AA094; background:#fff;}
-#top_tabs_box{ padding-right:138px; height:40px; border-bottom:1px solid #e2e2e2; }
-#top_tabs{ position: absolute; border-bottom:none;}
+/* 不显示tab */
+#top_tabs{ position: absolute; border-bottom:none;display: none}
 .layui-tab-title .layui-this{ background-color:#1AA094; color:#fff; }
 .layui-tab-title .layui-this:after{ border:none; }
 .layui-tab-title li cite{ font-style: normal; padding-left:5px; }
-.clildFrame.layui-tab-content{ top:41px; position:absolute; bottom:0; width:100%; padding:0;}
+.clildFrame.layui-tab-content{ top:0px; position:absolute; bottom:0; width:100%; padding:0;}
 /*多窗口页面操作下拉*/
 .closeBox{ position:absolute; right:0; background-color:#fff !important; color:#000; border-left:1px solid #e2e2e2; border-bottom:1px solid #e2e2e2; }
 .closeBox .layui-nav-item{ line-height:40px; }
@@ -152,7 +152,10 @@ iframe{ position:absolute; height:100%; width:100%; border:none;}
 }
 
 /*修改顶部高度*/
-.header .layui-nav-child,.layui-body,.layui-layout-admin .layui-side,.header .layui-nav-bar{ top:50px !important;}
-.header .layui-nav .layui-nav-item,.header .layui-nav .layui-nav-item>a,.header,.logo{ line-height:50px !important; max-height:50px; !important;}
-.mobileTopLevelMenus{ float:left;}
-.hideMenu{ margin-top: 10px;}
+/*.header .layui-nav-child,.layui-body,.layui-layout-admin .layui-side,.header .layui-nav-bar{ top:50px !important;}*/
+/*.header .layui-nav .layui-nav-item,.header .layui-nav .layui-nav-item>a,.header,.logo{ line-height:50px !important; max-height:50px; !important;}*/
+/*.mobileTopLevelMenus{ float:left;}*/
+/*!*.hideMenu{ margin-top: 10px;}*!*/
+
+/** 去除footer */
+.layui-body {top:50px !important;bottom:0px !important;}

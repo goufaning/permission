@@ -12,9 +12,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class PageController {
 
     @RequestMapping("/page/{page}")
-    public ModelAndView welcome(@PathVariable String page) {
+    public ModelAndView page(@PathVariable String page) {
         return ResultUtil.view("page/" + page);
     }
+
 
 
     @GetMapping(value = { "/login"})
