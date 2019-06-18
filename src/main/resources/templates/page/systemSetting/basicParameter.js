@@ -1,8 +1,6 @@
-layui.config({
-	base : "js/"
-}).use(['form','layer','jquery'],function(){
-	var form = layui.form(),
-		layer = parent.layer === undefined ? layui.layer : parent.layer,
+layui.use(['form','layer','jquery'],function(){
+	var form = layui.form,
+		layer = parent.layer === undefined ? layui.layer : top.layer,
 		laypage = layui.laypage,
 		$ = layui.jquery;
 
@@ -26,7 +24,7 @@ layui.config({
         setTimeout(function(){
             layer.close(index);
 			layer.msg("系统基本参数修改成功！");
-        },2000);
+        },500);
  		return false;
  	})
 

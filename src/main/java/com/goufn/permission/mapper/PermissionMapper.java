@@ -5,6 +5,7 @@ import com.goufn.permission.entity.SysPermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -18,4 +19,11 @@ public interface PermissionMapper extends BaseMapper<SysPermission> {
      * @return set
      */
     Set<String> findPermsByUserId(Integer userId);
+
+    /**
+     * 查询用户按钮
+     * @param userId
+     * @return
+     */
+    List<SysPermission> selectUserMenu(int userId);
 }

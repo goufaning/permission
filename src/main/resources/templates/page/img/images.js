@@ -1,9 +1,10 @@
 layui.config({
 	base : "../../js/"
-}).use(['flow','form','layer'],function(){
+}).use(['flow','form','layer','upload'],function(){
     var flow = layui.flow,
-        form = layui.form(),
-        layer = parent.layer === undefined ? layui.layer : parent.layer,
+        form = layui.form,
+        layer = parent.layer === undefined ? layui.layer : top.layer,
+        upload = layui.upload,
         $ = layui.jquery;
 
     //流加载图片
@@ -11,20 +12,49 @@ layui.config({
     flow.load({
         elem: '#Images', //流加载容器
         done: function(page, next){ //加载下一页
-            $.get("../../json/images.json",function(data){
+            $.get("../../json/images.json",function(res){
                 //模拟插入
-                var imgList = [];
+                var imgList = [],data = res.data;
                 var maxPage = imgNums*page < data.length ? imgNums*page : data.length;
                 setTimeout(function(){
                     for(var i=imgNums*(page-1); i<maxPage; i++){
-                        imgList.push('<li><img src="'+ data[i].imgSrc +'"><div class="operate"><div class="check"><input type="checkbox" name="belle" lay-filter="choose" lay-skin="primary" title="'+data[i].imgTitle+'"></div><i class="layui-icon img_del">&#xe640;</i></div></li>')
+                        imgList.push('<li><img layer-src="../../'+ data[i].src +'" src="../../'+ data[i].thumb +'" alt="'+data[i].alt+'"><div class="operate"><div class="check"><input type="checkbox" name="belle" lay-filter="choose" lay-skin="primary" title="'+data[i].alt+'"></div><i class="layui-icon img_del">&#xe640;</i></div></li>');
                     }
                     next(imgList.join(''), page < (data.length/imgNums));
                     form.render();
                 }, 500);
-            }); 
+            });
         }
     });
+
+    //设置图片的高度
+    $(window).resize(function(){
+        $("#Images li img").height($("#Images li img").width());
+    })
+
+    //多图片上传
+    upload.render({
+        elem: '.uploadNewImg',
+        url: '../../json/userface.json',
+        multiple: true,
+        before: function(obj){
+            //预读本地文件示例，不支持ie8
+            obj.preview(function(index, file, result){
+                $('#Images').prepend('<li><img layer-src="'+ result +'" src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"><div class="operate"><div class="check"><input type="checkbox" name="belle" lay-filter="choose" lay-skin="primary" title="'+file.name+'"></div><i class="layui-icon img_del">&#xe640;</i></div></li>')
+                //设置图片的高度
+                $("#Images li img").height($("#Images li img").width());
+                form.render("checkbox");
+            });
+        },
+        done: function(res){
+            //上传完毕
+        }
+    });
+
+    //弹出层
+    $("body").on("click","#Images img",function(){
+        parent.showImg();
+    })
 
     //删除单张图片
     $("body").on("click",".img_del",function(){
@@ -45,7 +75,7 @@ layui.config({
         form.render('checkbox');
     });
 
-    //通过判断文章是否全部选中来确定全选按钮是否选中
+    //通过判断是否全部选中来确定全选按钮是否选中
     form.on("checkbox(choose)",function(data){
         var child = $(data.elem).parents('#Images').find('li input[type="checkbox"]');
         var childChecked = $(data.elem).parents('#Images').find('li input[type="checkbox"]:checked');
@@ -70,7 +100,7 @@ layui.config({
                         $(this).parents("li").hide(1000);
                         setTimeout(function(){$(this).parents("li").remove();},950);
                     })
-                    $('#Images li input[type="checkbox"]').prop("checked",false);
+                    $('#Images li input[type="checkbox"],#selectAll').prop("checked",false);
                     form.render();
                     layer.close(index);
                     layer.msg("删除成功");
