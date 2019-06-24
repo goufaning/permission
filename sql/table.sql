@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
 
-Date: 2019-06-15 10:50:41
+Date: 2019-06-18 15:15:28
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,18 +22,28 @@ DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `name` varchar(255) DEFAULT NULL COMMENT '权限名称',
+  `icon` varchar(255) DEFAULT '' COMMENT '图标',
   `url` varchar(255) DEFAULT NULL COMMENT '资源路径',
+  `spread` tinyint(255) DEFAULT NULL COMMENT '是否默认展开',
+  `parent_id` int(11) DEFAULT '0' COMMENT '父编号',
   `permission` varchar(255) DEFAULT NULL COMMENT '权限字符串',
   `type` int(11) DEFAULT '0' COMMENT '资源类型:0目录 1菜单 2按钮',
   `status` int(11) DEFAULT '1' COMMENT '用户状态：1有效2删除',
   `description` varchar(255) DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES ('1', '主页', '/index', 'index', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('1', '主页', '', '/index', '0', '0', 'index', '0', '1', '');
+INSERT INTO `sys_permission` VALUES ('2', '后台首页', 'icon-computer', '/page/main', '0', '0', 'computer', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('3', '文章列表', 'icon-text', '/page/news/newsList', '0', '0', 'text', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('4', '友情链接', '&#xe64c;', '/page/links/linksList', '0', '0', 'link', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('5', '系统基本参数', '&#xe631;', 'page/systemParameter/systemParameter', '0', '0', 'parameter', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('6', '其他页面', '&#xe630;', '', '0', '0', 'other', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('7', '404页面', '&#xe61c;', '/page/404', '0', '6', '404', '1', '1', '');
+INSERT INTO `sys_permission` VALUES ('8', '登录', '&#xe609;', '/page/login/login', '0', '6', 'login', '1', '1', '');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -61,12 +71,18 @@ CREATE TABLE `sys_role_permission` (
   `role_id` int(11) DEFAULT NULL COMMENT '角色id',
   `permission_id` int(11) DEFAULT NULL COMMENT '权限id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role_permission
 -- ----------------------------
 INSERT INTO `sys_role_permission` VALUES ('1', '1', '1');
+INSERT INTO `sys_role_permission` VALUES ('3', '1', '3');
+INSERT INTO `sys_role_permission` VALUES ('4', '1', '4');
+INSERT INTO `sys_role_permission` VALUES ('5', '1', '5');
+INSERT INTO `sys_role_permission` VALUES ('6', '1', '6');
+INSERT INTO `sys_role_permission` VALUES ('7', '1', '7');
+INSERT INTO `sys_role_permission` VALUES ('8', '1', '8');
 
 -- ----------------------------
 -- Table structure for sys_user
