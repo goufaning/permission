@@ -1,6 +1,7 @@
 package com.goufn.permission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goufn.permission.entity.SysUser;
 import com.goufn.permission.mapper.PermissionMapper;
 import com.goufn.permission.mapper.RoleMapper;
@@ -12,10 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements UserService {
 
-    @Autowired
-    private UserMapper userMapper;
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
@@ -25,14 +24,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SysUser getUserInfo(Integer userID) {
-        return null;
+        return this.baseMapper.selectById(userID);
     }
 
     @Override
     public SysUser getUserInfo(String userName) {
         QueryWrapper<SysUser> qryWrapper = new QueryWrapper<>();
         qryWrapper.eq("username", userName);
-        return userMapper.selectOne(qryWrapper);
+        return this.baseMapper.selectOne(qryWrapper);
     }
 
     @Override
