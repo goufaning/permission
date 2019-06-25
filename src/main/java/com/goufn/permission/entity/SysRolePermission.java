@@ -5,9 +5,10 @@ import lombok.Data;
 
 @Data
 public class SysRolePermission {
-    private int id;
 
-    private int userId;
+    /** 角色id  */
+    private int roleId;
 
+    /** 权限id */
     private int permissionId;
 }

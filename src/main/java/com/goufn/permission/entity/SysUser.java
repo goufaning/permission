@@ -28,4 +28,6 @@ public class SysUser {
     /** 修改时间 **/
     private Date updateTime;
 
+    private transient int roleId;
+
 }

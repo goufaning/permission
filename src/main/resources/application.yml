@@ -6,10 +6,11 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
     cache: false
-
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 
 shiro:
   # token有效期，单位秒
   jwtTimeOut: 3600
+server:
+  port: 8080

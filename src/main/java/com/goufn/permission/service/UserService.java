@@ -10,29 +10,26 @@ public interface UserService {
 
     /**
      * 获取指定用户ID对应的用户账户信息
-     * @param userID 用户ID
+     * @param userId 用户ID
      * @return 返回用户账户信息
      */
-    SysUser getUserInfo(Integer userID);
+    SysUser findById(Integer userId);
 
     /**
      * 获取指定 userName 对应的用户账户信息
      * @param userName 用户名
      * @return 返回用户账户信息
      */
-    SysUser getUserInfo(String userName);
+    SysUser findByName(String userName);
 
     /**
      * 获取所有用户账户信息
      * @return 返回所有的用户账户信息
      */
-    List<SysUser> getAllUserInfo();
+    List<SysUser> listUser();
 
-    /**
-     * 更新用户的账户信息
-     * @param user 用户账户信息
-     */
-    void updateUserInfo(SysUser user);
+
+    void updateLoginTime(SysUser user);
 
     /**
      * 删除指定 userID 的用户账户信息
@@ -44,12 +41,6 @@ public interface UserService {
      * 添加一条用户账户信息
      * @param user 需要添加的用户账户信息
      */
-    boolean insertUserInfo(SysUser user);
+    void createUser(SysUser user);
 
-    /**
-     * 获取用户的权限角色
-     * @param userID 用户 ID
-     * @return 返回一个保存有用户角色的 Set，若该用户没有任何角色，则返回一个不包含任何元素的 Set
-     */
-    Set<String> getUserRoles(Integer userID);
 }
