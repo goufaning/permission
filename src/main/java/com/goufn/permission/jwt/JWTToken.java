@@ -1,7 +1,8 @@
 package com.goufn.permission.jwt;
 
+import lombok.Data;
 import org.apache.shiro.authc.AuthenticationToken;
-
+@Data
 public class JWTToken implements AuthenticationToken {
     private String token;
 

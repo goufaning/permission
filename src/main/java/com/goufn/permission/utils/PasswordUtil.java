@@ -31,4 +31,10 @@ public class PasswordUtil {
         user.setPassword(newPassword);
     }
 
+    public static String encryptPassword(String password, String salt){
+        //将用户的注册密码经过散列算法替换成一个不可逆的新密码保存进数据，使用过程使用了盐
+        String newPassword = new SimpleHash(algorithmName, password, salt, hashIterations).toString();
+        return newPassword;
+    }
+
 }

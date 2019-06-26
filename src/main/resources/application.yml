@@ -8,9 +8,15 @@ spring:
     cache: false
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+      # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+my:
+  shiro:
+      # 后端免认证接口 url
+      anonUrl: /user/login
+      # token有效期，单位秒
+      jwtTimeOut: 3600
 
-shiro:
-  # token有效期，单位秒
-  jwtTimeOut: 3600
 server:
   port: 8080

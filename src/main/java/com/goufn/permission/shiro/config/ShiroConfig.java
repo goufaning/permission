@@ -1,5 +1,6 @@
 package com.goufn.permission.shiro.config;
 
+import com.goufn.permission.jwt.JWTFilter;
 import com.goufn.permission.shiro.realm.MyShiroRealm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -33,34 +34,13 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();//获取filters
-        filters.put("authc", new MyFormAuthenticationFilter());
-        // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        //未授权界面;
-        shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+        LinkedHashMap<String, Filter> filters = new LinkedHashMap<>();
+        filters.put("jwt", new JWTFilter());
+        shiroFilterFactoryBean.setFilters(filters);
 
         //拦截器.
         Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
-
-        // 配置不会被拦截的链接 顺序判断
-        // 设为anon  FormAuthenticationFilter不会拦截  跳转页面由前端进行
-        filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/css/**", "anon");
-        filterChainDefinitionMap.put("/layui/**", "anon");
-        filterChainDefinitionMap.put("/images/**", "anon");
-        filterChainDefinitionMap.put("/js/**", "anon");
-        filterChainDefinitionMap.put("/fonts/**", "anon");
-        filterChainDefinitionMap.put("/static/**", "anon");
-        //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-        filterChainDefinitionMap.put("/logout", "logout");
-
-        //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
-        //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        filterChainDefinitionMap.put("/index", "authc");
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         System.out.println("Shiro拦截器工厂类注入成功");
         return shiroFilterFactoryBean;

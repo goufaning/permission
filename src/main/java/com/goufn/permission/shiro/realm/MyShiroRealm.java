@@ -1,10 +1,14 @@
 package com.goufn.permission.shiro.realm;
 
+import com.auth0.jwt.JWT;
 import com.goufn.permission.entity.SysUser;
+import com.goufn.permission.jwt.JWTToken;
+import com.goufn.permission.jwt.JWTUtil;
 import com.goufn.permission.service.PermissionService;
 import com.goufn.permission.service.RoleService;
 import com.goufn.permission.service.UserService;
 import com.goufn.permission.utils.PasswordUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -24,6 +28,14 @@ public class MyShiroRealm extends AuthorizingRealm {
     private PermissionService permissionService;
     @Autowired
     private UserService userService;
+
+    /**
+     * 必须重写此方法，不然Shiro会报错
+     */
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JWTToken;
+    }
 
     /**
      * 对用户进行角色授权
@@ -58,14 +70,14 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String token = (String) authenticationToken.getCredentials();
         //获取用户的输入的账号.
-        String username = token.getUsername();
-        System.out.println(token.getCredentials());
+        String username = JWTUtil.getUsername(token);
+        if (StringUtils.isBlank(username))
+            throw new AuthenticationException("token校验不通过");
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        SysUser user = userService.getUserInfo(username);
-        System.out.println("----->>user="+ user);
+        SysUser user = userService.findByName(username);
         if(user == null){
             throw new AuthenticationException();
         }

@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.goufn.permission.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +14,8 @@ import java.util.Date;
 @Slf4j
 public class JWTUtil {
 
-    private static final long EXPIRE_TIME = 3600 * 1000;
+    private static final long EXPIRE_TIME = SpringContextUtil.getBean(PermissionProperties.class).getJwtTimeOut() * 1000;
+
 
     /**
      * 校验 token是否正确
@@ -28,6 +30,7 @@ public class JWTUtil {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim("username", username)
                     .build();
+            // 效验TOKEN
             verifier.verify(token);
             log.info("token is valid");
             return true;
@@ -38,7 +41,7 @@ public class JWTUtil {
     }
 
     /**
-     * 从 token中获取用户名
+     * 得token中的信息无需secret解密也能获得
      *
      * @return token中包含的用户名
      */
@@ -47,30 +50,25 @@ public class JWTUtil {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("username").asString();
         } catch (JWTDecodeException e) {
-            log.error("error：{}", e.getMessage());
+            log.error("error：{}", e);
             return null;
         }
     }
 
     /**
-     * 生成 token
+     * 生成签名
      *
      * @param username 用户名
      * @param secret   用户的密码
      * @return token
      */
     public static String sign(String username, String secret) {
-        try {
-            username = StringUtils.lowerCase(username);
-            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.create()
-                    .withClaim("username", username)
-                    .withExpiresAt(date)
-                    .sign(algorithm);
-        } catch (Exception e) {
-            log.error("error：{}", e);
-            return null;
-        }
+        username = StringUtils.lowerCase(username);
+        Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        return JWT.create()
+                .withClaim("username", username)
+                .withExpiresAt(date)
+                .sign(algorithm);
     }
 }
