@@ -1,7 +1,7 @@
 package com.goufn.permission.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.goufn.permission.entity.SysRole;
+import com.goufn.permission.model.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +11,5 @@ import java.util.Set;
 @Mapper
 public interface RoleMapper extends BaseMapper<SysRole> {
 
-    Set<String> findRoleByUserId(int userId);
+    Set<String> findRoleByUserId(long userId);
 }

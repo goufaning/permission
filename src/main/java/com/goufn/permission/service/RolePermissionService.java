@@ -1,6 +1,6 @@
 package com.goufn.permission.service;
 
-import com.goufn.permission.entity.SysRolePermission;
+import com.goufn.permission.model.SysRoleMenu;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface RolePermissionService {
 
     void deleteByPermissionId(List<Integer> menuIds);
 
-    List<SysRolePermission> getRolePermissionByRoleId(int roleId);
+    List<SysRoleMenu> getRolePermissionByRoleId(int roleId);
 }

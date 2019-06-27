@@ -1,6 +1,6 @@
 package com.goufn.permission.service;
 
-import com.goufn.permission.entity.SysUserRole;
+import com.goufn.permission.model.SysUserRole;
 
 import java.util.List;
 

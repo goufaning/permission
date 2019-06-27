@@ -2,7 +2,7 @@ package com.goufn.permission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.goufn.permission.entity.SysUserRole;
+import com.goufn.permission.model.SysUserRole;
 import com.goufn.permission.mapper.UserRoleMapper;
 import com.goufn.permission.service.UserRoleService;
 import org.springframework.stereotype.Service;

@@ -1,11 +1,9 @@
 package com.goufn.permission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.goufn.permission.entity.SysUser;
-import com.goufn.permission.entity.SysUserRole;
-import com.goufn.permission.mapper.PermissionMapper;
+import com.goufn.permission.model.SysUser;
+import com.goufn.permission.mapper.MenuMapper;
 import com.goufn.permission.mapper.RoleMapper;
 import com.goufn.permission.mapper.UserMapper;
 import com.goufn.permission.service.RolePermissionService;
@@ -17,14 +15,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements UserService {
 
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
-    private PermissionMapper permissionMapper;
+    private MenuMapper menuMapper;
     @Autowired
     private UserRoleService userRoleService;
     @Autowired
@@ -32,7 +30,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
 
 
     @Override
-    public SysUser findById(Integer userId) {
+    public SysUser findById(Long userId) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getId, userId);
         return baseMapper.selectOne(wrapper);
@@ -41,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
     @Override
     public SysUser findByName(String userName) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysUser::getUsername, userName);
+        wrapper.eq(SysUser::getName, userName);
         return baseMapper.selectOne(wrapper);
     }
 
@@ -52,7 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
 
     @Override
     public void updateLoginTime(SysUser user) {
-        user.setLastLoginTime(new Date());
+        user.setLastUpdateTime(new Date());
         updateById(user);
     }
 

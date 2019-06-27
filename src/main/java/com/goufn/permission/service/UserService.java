@@ -1,10 +1,9 @@
 package com.goufn.permission.service;
 
 
-import com.goufn.permission.entity.SysUser;
+import com.goufn.permission.model.SysUser;
 
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
@@ -13,7 +12,7 @@ public interface UserService {
      * @param userId 用户ID
      * @return 返回用户账户信息
      */
-    SysUser findById(Integer userId);
+    SysUser findById(Long userId);
 
     /**
      * 获取指定 userName 对应的用户账户信息

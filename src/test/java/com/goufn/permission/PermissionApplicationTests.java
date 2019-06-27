@@ -1,6 +1,6 @@
 package com.goufn.permission;
 
-import com.goufn.permission.entity.SysUser;
+import com.goufn.permission.model.SysUser;
 import com.goufn.permission.mapper.UserMapper;
 import com.goufn.permission.utils.PasswordUtil;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class PermissionApplicationTests {
     public void addUser() {
         SysUser user = new SysUser();
 
-        user.setUsername("admin");
+        user.setName("admin");
         user.setPassword("123456");
         PasswordUtil.encryptPassword(user);
         mapper.insert(user);

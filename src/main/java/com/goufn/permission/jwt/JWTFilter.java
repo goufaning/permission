@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
-    private static final String TOKEN = "Authentication";
+    private static final String TOKEN = "Authorization";
 
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -32,7 +32,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws UnauthorizedException {
-        System.err.println("进入isAccessAllowed");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String anonUrl = SpringContextUtil.getBean(PermissionProperties.class).getAnonUrl();
         String[] anonUrls = anonUrl.split(StringPool.COMMA);
@@ -42,13 +41,12 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 match = true;
         }
         if (match) {
-            System.err.println("match" + httpServletRequest.getRequestURI());
             return true;
         }
         if (isLoginAttempt(request, response)) {
             return executeLogin(request, response);
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -61,7 +59,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader("Authorization");
+        String token = httpServletRequest.getHeader(TOKEN);
         JWTToken jwtToken = new JWTToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         try {

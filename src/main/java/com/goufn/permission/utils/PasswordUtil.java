@@ -1,6 +1,6 @@
 package com.goufn.permission.utils;
 
-import com.goufn.permission.entity.SysUser;
+import com.goufn.permission.model.SysUser;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;

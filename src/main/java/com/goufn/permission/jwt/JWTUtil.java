@@ -48,7 +48,7 @@ public class JWTUtil {
     public static String getUsername(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("username").asString();
+            return jwt.getClaim("name").asString();
         } catch (JWTDecodeException e) {
             log.error("error：{}", e);
             return null;

@@ -1,10 +1,9 @@
 package com.goufn.permission.shiro.realm;
 
-import com.auth0.jwt.JWT;
-import com.goufn.permission.entity.SysUser;
+import com.goufn.permission.model.SysUser;
 import com.goufn.permission.jwt.JWTToken;
 import com.goufn.permission.jwt.JWTUtil;
-import com.goufn.permission.service.PermissionService;
+import com.goufn.permission.service.MenuService;
 import com.goufn.permission.service.RoleService;
 import com.goufn.permission.service.UserService;
 import com.goufn.permission.utils.PasswordUtil;
@@ -25,17 +24,9 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private PermissionService permissionService;
+    private MenuService menuService;
     @Autowired
     private UserService userService;
-
-    /**
-     * 必须重写此方法，不然Shiro会报错
-     */
-    @Override
-    public boolean supports(AuthenticationToken token) {
-        return token instanceof JWTToken;
-    }
 
     /**
      * 对用户进行角色授权
@@ -49,7 +40,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         SysUser user = (SysUser)principals.getPrimaryPrincipal();
         Set<String> roles = roleService.findRoleByUserId(user.getId());
-        Set<String> permissions = permissionService.findPermsByUserId(user.getId());
+        Set<String> permissions = menuService.findPermsByUserId(user.getId());
         authorizationInfo.setRoles(roles);
         authorizationInfo.setStringPermissions(permissions);
         return authorizationInfo;
@@ -70,16 +61,13 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-        String token = (String) authenticationToken.getCredentials();
-        //获取用户的输入的账号.
-        String username = JWTUtil.getUsername(token);
-        if (StringUtils.isBlank(username))
-            throw new AuthenticationException("token校验不通过");
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String username = token.getUsername();
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         SysUser user = userService.findByName(username);
         if(user == null){
-            throw new AuthenticationException();
+            throw new UnknownAccountException();
         }
         //认证信息里存放账号密码, getName() 是当前Realm的继承方法,通常返回当前类名 :databaseRealm
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
