@@ -84,12 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         IPage<SysUser> result = baseMapper.selectPage(page, queryWrapper);
         // 加载用户角色信息
         findUserRoles(result);
-        pageResult = new PageResult();
-        pageResult.setPageNum((int) result.getCurrent());
-        pageResult.setPageSize((int) result.getSize());
-        pageResult.setTotalSize(result.getTotal());
-        pageResult.setTotalPages((int) result.getPages());
-        pageResult.setContent(result.getRecords());
+        pageResult = new PageResult(result);
         return pageResult;
     }
 

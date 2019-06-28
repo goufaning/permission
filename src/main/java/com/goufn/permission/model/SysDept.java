@@ -1,5 +1,6 @@
 package com.goufn.permission.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,12 +17,12 @@ public class SysDept extends BaseModel {
     private Integer orderNum;
 
     private Byte delFlag;
-
+    @TableField(exist = false)
     private List<SysDept> children;
 
-    // 非数据库字段
+    @TableField(exist = false)
     private String parentName;
-    // 非数据库字段
+    @TableField(exist = false)
     private Integer level;
 
 }

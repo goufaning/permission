@@ -1,5 +1,6 @@
 package com.goufn.permission.common.page;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public class PageResult {
      * 分页数据
      */
     private List<?> content;
+
+    public PageResult(IPage page) {
+        this.setPageNum((int) page.getCurrent());
+        this.setPageSize((int) page.getSize());
+        this.setTotalSize(page.getTotal());
+        this.setTotalPages((int) page.getPages());
+        this.setContent(page.getRecords());
+    }
 }
