@@ -17,11 +17,13 @@ public class MenuController {
     private MenuService menuService;
 
     @PostMapping(value="/save")
+    @RequiresPermissions({"sys:menu:add", "sys:menu:edit"})
     public CommonResult save(@RequestBody SysMenu record) {
         return ResultUtil.success(menuService.save(record));
     }
 
     @PostMapping(value="/delete")
+    @RequiresPermissions("sys:menu:delete")
     public CommonResult delete(@RequestBody List<SysMenu> records) {
         for (SysMenu record : records) {
             menuService.removeById(record.getId());
@@ -37,6 +39,7 @@ public class MenuController {
     }
 
     @GetMapping("/findMenuTree")
+    @RequiresPermissions("sys:menu:view")
     public CommonResult findMenuTree() {
         List<SysMenu> menuList = menuService.findTree(null, 0);
         return ResultUtil.success(menuList);

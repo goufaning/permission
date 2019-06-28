@@ -25,6 +25,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
         if (entity.getParentId() == null) {
             entity.setParentId(0L);
         }
+        if (baseMapper.selectById(entity.getId()) != null) {
+            return super.updateById(entity);
+        }
         return super.save(entity);
     }
 

@@ -19,6 +19,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MyShiroRealm extends AuthorizingRealm {
     @Autowired
@@ -36,11 +37,14 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         SysUser user = (SysUser)principals.getPrimaryPrincipal();
         Set<String> roles = roleService.findRoleByUserId(user.getId());
         Set<String> permissions = menuService.findPermsByUserId(user.getId());
+        permissions = permissions.stream().filter(s -> s != null && !s.equals("")).collect(Collectors.toSet());
+        for (String permission : permissions) {
+            System.err.print(permission + " ");
+        }
         authorizationInfo.setRoles(roles);
         authorizationInfo.setStringPermissions(permissions);
         return authorizationInfo;

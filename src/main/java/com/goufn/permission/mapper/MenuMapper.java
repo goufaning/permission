@@ -18,7 +18,7 @@ public interface MenuMapper extends BaseMapper<SysMenu> {
      * @param userId 状态
      * @return set
      */
-    Set<String> findPermsByUserId(Integer userId);
+    Set<String> findPermsByUserId(Long userId);
 
     /**
      * 查询用户按钮

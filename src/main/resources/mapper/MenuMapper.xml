@@ -17,7 +17,7 @@
         from sys_menu m
         LEFT JOIN sys_role_menu rm ON m.id=rm.menu_id
         LEFT JOIN sys_user_role ur on rm.role_id = ur.role_id
-        WHERE ur.user_id=#{userId}
+        WHERE ur.user_id=#{userId} and trim(m.perms) != ''
     </select>
 
     <select id="findByUserName" parameterType="java.lang.String" resultMap="menu">

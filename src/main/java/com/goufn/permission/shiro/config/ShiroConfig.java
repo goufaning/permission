@@ -1,68 +1,40 @@
 package com.goufn.permission.shiro.config;
 
-import com.goufn.permission.jwt.JWTFilter;
 import com.goufn.permission.shiro.realm.MyShiroRealm;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
+import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
-import javax.servlet.Filter;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Configuration
-@Order(-1) //注解表示加载顺序
 public class ShiroConfig {
 
-    /**
-     * 注：使用shiro-spring-boot-starter 1.4时，返回类型是SecurityManager会报错，直接引用shiro-spring则不报错
-     * @return
-     */
     @Bean
-    public DefaultWebSecurityManager securityManager(MyShiroRealm myShiroRealm){
-        DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
-        securityManager.setRealm(myShiroRealm);
-        return securityManager;
+    public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
+        /**
+         * setUsePrefix(false)用于解决一个奇怪的bug。在引入spring aop的情况下。
+         * 在@Controller注解的类的方法中加入@RequiresRole注解，会导致该方法无法映射请求，导致返回404。
+         * 加入这项配置能解决这个bug
+         */
+        creator.setProxyTargetClass(true);
+        creator.setUsePrefix(true);
+        return creator;
     }
 
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
-        return authorizationAttributeSourceAdvisor;
-    }
+    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
+        DefaultShiroFilterChainDefinition chain = new DefaultShiroFilterChainDefinition();
+        // 由于demo1展示统一使用注解做访问控制，所以这里配置所有请求路径都可以匿名访问
+        chain.addPathDefinition("/**", "anon"); // all paths are managed via annotations
 
-    @Bean
-    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
-        System.out.println("ShiroConfiguration.shirFilter()");
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        // 必须设置 SecurityManager
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
-        // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-
-        //拦截器.
-        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
-
-        // 配置不会被拦截的链接 顺序判断
-        // 设为anon  FormAuthenticationFilter不会拦截  跳转页面由前端进行
-        filterChainDefinitionMap.put("/login", "anon");
-        filterChainDefinitionMap.put("/menu/*", "roles[admin]");
-        //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-        filterChainDefinitionMap.put("/logout", "logout");
-
-        //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
-        //<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        filterChainDefinitionMap.put("/**", "authc");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        System.out.println("Shiro拦截器工厂类注入成功");
-        return shiroFilterFactoryBean;
+        // 这另一种配置方式。但是还是用上面那种吧，容易理解一点。
+        // or allow basic authentication, but NOT require it.
+        // chainDefinition.addPathDefinition("/**", "authcBasic[permissive]");
+        return chain;
     }
 
 
@@ -72,7 +44,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public MyShiroRealm myShiroRealm(){
+    public Realm realm(){
         MyShiroRealm myShiroRealm = new MyShiroRealm();
         return myShiroRealm;
     }

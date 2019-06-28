@@ -5,6 +5,7 @@ import com.goufn.permission.model.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -12,4 +13,5 @@ import java.util.Set;
 public interface RoleMapper extends BaseMapper<SysRole> {
 
     Set<String> findRoleByUserId(long userId);
+
 }

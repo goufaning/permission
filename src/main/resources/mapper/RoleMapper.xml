@@ -13,10 +13,17 @@
     </resultMap>
     <select id="findRoleByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
         select
-        r.role,
+        r.name
         from sys_role r
         LEFT JOIN sys_user_role ur on r.id = ur.role_id
-        where ur.userId=#{userId}
+        where ur.user_id=#{userId}
+    </select>
+    <select id="findByUserId" parameterType="java.lang.Long" resultMap="roleMap">
+        select
+        r.*
+        from sys_role r
+        LEFT JOIN sys_user_role ur on r.id = ur.role_id
+        where ur.user_id=#{userId}
     </select>
 
 </mapper>
