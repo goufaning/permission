@@ -1,12 +1,18 @@
 package com.goufn.permission.shiro.config;
 
+import org.apache.shiro.mgt.SecurityManager;
+import com.goufn.permission.jwt.JWTFilter;
 import com.goufn.permission.shiro.realm.MyShiroRealm;
 import org.apache.shiro.realm.Realm;
-import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.servlet.Filter;
+import java.util.LinkedHashMap;
 
 
 @Configuration
@@ -26,15 +32,22 @@ public class ShiroConfig {
     }
 
     @Bean
-    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        DefaultShiroFilterChainDefinition chain = new DefaultShiroFilterChainDefinition();
-        // 由于demo1展示统一使用注解做访问控制，所以这里配置所有请求路径都可以匿名访问
-        chain.addPathDefinition("/**", "anon"); // all paths are managed via annotations
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        // 设置 securityManager
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
 
-        // 这另一种配置方式。但是还是用上面那种吧，容易理解一点。
-        // or allow basic authentication, but NOT require it.
-        // chainDefinition.addPathDefinition("/**", "authcBasic[permissive]");
-        return chain;
+        // 在 Shiro过滤器链上加入 JWTFilter
+        LinkedHashMap<String, Filter> filters = new LinkedHashMap<>();
+        filters.put("jwt", new JWTFilter());
+        shiroFilterFactoryBean.setFilters(filters);
+
+        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        // 所有请求都要经过 jwt过滤器
+        filterChainDefinitionMap.put("/**", "jwt");
+
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        return shiroFilterFactoryBean;
     }
 
 
@@ -47,6 +60,21 @@ public class ShiroConfig {
     public Realm realm(){
         MyShiroRealm myShiroRealm = new MyShiroRealm();
         return myShiroRealm;
+    }
+
+    @Bean
+    public DefaultWebSecurityManager securityManager() {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        // 配置 SecurityManager，并注入 shiroRealm
+        securityManager.setRealm(realm());
+        return securityManager;
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
     }
 
 

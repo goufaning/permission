@@ -37,29 +37,22 @@ public class LoginController {
         log.info("[进入登录方法....]");
         String username = requestUser.getName();
         String password = requestUser.getPassword();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         // 获取当前的用户的 Subject，shiro
-        Subject currentUser = SecurityUtils.getSubject();
-        // 判断用户是否已经登陆
-        // 执行登陆操作
-        try {
-            //会调用realms/UserAuthorizingRealm中的doGetAuthenticationInfo方法
-            currentUser.login(token);
-        } catch (UnknownAccountException uae) {
+        SysUser user = userService.findByName(username);
+        if (user == null) {
             return ResultUtil.error("用户名不存在");
-        } catch (IncorrectCredentialsException ice) {
-            return ResultUtil.error("密码错误");
-        } catch (LockedAccountException lae) {
-            return ResultUtil.error("LockedAccountException");
-        } catch (ExcessiveAttemptsException eae) {
-            return ResultUtil.error("ExcessiveAttemptsException");
-        } catch (AuthenticationException ae) {
-            return ResultUtil.error("AuthenticationException");
-        } catch (Exception e) {
-            return ResultUtil.error("未知错误");
         }
+        String passwdWithSalt = PasswordUtil.encryptPassword(password, user.getSalt());
+        if (!StringUtils.equals(user.getPassword(), passwdWithSalt)) {
+            return ResultUtil.error("密码错误");
+        }
+        userService.updateLoginTime(user);
+        String token = JWTUtil.sign(username, passwdWithSalt);
+        LocalDateTime expireTime = LocalDateTime.now().plusSeconds(properties.getJwtTimeOut());
+        String expireTimeStr = DateUtil.formatFullTime(expireTime);
+        JWTToken jwtToken = new JWTToken(token, expireTimeStr);
         Map<String, Object> map = new HashMap<>();
-        map.put("token", "123");
+        map.put("token", jwtToken.getToken());
         log.info("[登录成功]-[{}]", username);
         return ResultUtil.success("登录成功", map);
     }

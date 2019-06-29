@@ -46,7 +46,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         if (isLoginAttempt(request, response)) {
             return executeLogin(request, response);
         }
-        return true;
+        return false;
     }
 
     @Override

@@ -29,6 +29,11 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JWTToken;
+    }
+
     /**
      * 对用户进行角色授权
      *
@@ -38,7 +43,8 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        SysUser user = (SysUser)principals.getPrimaryPrincipal();
+        String username = JWTUtil.getUsername(principals.toString());
+        SysUser user = userService.findByName(username);
         Set<String> roles = roleService.findRoleByUserId(user.getId());
         Set<String> permissions = menuService.findPermsByUserId(user.getId());
         permissions = permissions.stream().filter(s -> s != null && !s.equals("")).collect(Collectors.toSet());
@@ -65,30 +71,35 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        String username = token.getUsername();
-        //通过username从数据库中查找 User对象，如果找到，没找到.
-        //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
+        // 这里的 token是从 JWTFilter 的 executeLogin 方法传递过来的，已经经过了解密
+        String token = (String) authenticationToken.getCredentials();
+
+        String username = JWTUtil.getUsername(token);
+        if (StringUtils.isBlank(username))
+            throw new AuthenticationException("token校验不通过");
+
+        // 通过用户名查询用户信息
         SysUser user = userService.findByName(username);
         if(user == null){
             throw new UnknownAccountException();
         }
+        if (!JWTUtil.verify(token, username, user.getPassword()))
+            throw new AuthenticationException("token校验不通过");
         //认证信息里存放账号密码, getName() 是当前Realm的继承方法,通常返回当前类名 :databaseRealm
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                user,
-                user.getPassword(),
-                ByteSource.Util.bytes(user.getSalt()),
+                token,
+                token,
                 getName()
         );
         return authenticationInfo;
     }
 
-    @Override
-    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
-        //HashedCredentialsMatcher是shiro提供的解析盐的实现类
-        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
-        matcher.setHashAlgorithmName(PasswordUtil.algorithmName);
-        matcher.setHashIterations(PasswordUtil.hashIterations);
-        super.setCredentialsMatcher(matcher);
-    }
+//    @Override
+//    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
+//        //HashedCredentialsMatcher是shiro提供的解析盐的实现类
+//        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+//        matcher.setHashAlgorithmName(PasswordUtil.algorithmName);
+//        matcher.setHashIterations(PasswordUtil.hashIterations);
+//        super.setCredentialsMatcher(matcher);
+//    }
 }
