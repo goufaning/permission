@@ -7,16 +7,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.goufn.permission.common.page.ColumnFilter;
 import com.goufn.permission.common.page.PageRequest;
 import com.goufn.permission.common.page.PageResult;
+import com.goufn.permission.mapper.DeptMapper;
 import com.goufn.permission.mapper.UserRoleMapper;
+import com.goufn.permission.model.SysDept;
 import com.goufn.permission.model.SysRole;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.mapper.RoleMapper;
 import com.goufn.permission.mapper.UserMapper;
 import com.goufn.permission.model.SysUserRole;
-import com.goufn.permission.service.MenuService;
-import com.goufn.permission.service.RolePermissionService;
-import com.goufn.permission.service.UserRoleService;
-import com.goufn.permission.service.UserService;
+import com.goufn.permission.service.*;
 import com.goufn.permission.utils.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
     @Autowired
     private MenuService menuService;
     @Autowired
-    private UserRoleService userRoleService;
+    private DeptMapper deptMapper;
     @Autowired
     private UserRoleMapper userRoleMapper;
-    @Autowired
-    private RolePermissionService rolePermissionService;
 
     @Override
     public boolean save(SysUser record) {
@@ -133,6 +130,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
             List<SysUserRole> userRoles = findUserRoles(sysUser.getId());
             sysUser.setUserRoles(userRoles);
             sysUser.setRoleNames(getRoleNames(userRoles));
+            SysDept dept = deptMapper.selectById(sysUser.getDeptId());
+            if (dept != null) {
+                sysUser.setDeptName(dept.getName());
+            }
         }
     }
 

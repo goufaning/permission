@@ -15,10 +15,10 @@ public interface MenuMapper extends BaseMapper<SysMenu> {
     /**
      * 根据用户id查询资源集合
      *
-     * @param userId 状态
+     * @param roleId
      * @return set
      */
-    Set<String> findPermsByUserId(Long userId);
+    List<SysMenu> findByRoleId(Long roleId);
 
     /**
      * 查询用户按钮
