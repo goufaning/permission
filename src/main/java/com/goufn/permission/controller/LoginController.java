@@ -1,7 +1,6 @@
 package com.goufn.permission.controller;
 
 import com.goufn.permission.common.result.CommonResult;
-import com.goufn.permission.common.result.ResultUtil;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.jwt.JWTToken;
 import com.goufn.permission.jwt.JWTUtil;
@@ -40,11 +39,11 @@ public class LoginController {
         // 获取当前的用户的 Subject，shiro
         SysUser user = userService.findByName(username);
         if (user == null) {
-            return ResultUtil.error("用户名不存在");
+            return CommonResult.error("用户名不存在");
         }
         String passwdWithSalt = PasswordUtil.encryptPassword(password, user.getSalt());
         if (!StringUtils.equals(user.getPassword(), passwdWithSalt)) {
-            return ResultUtil.error("密码错误");
+            return CommonResult.error("密码错误");
         }
         userService.updateLoginTime(user);
         String token = JWTUtil.sign(username, passwdWithSalt);
@@ -54,6 +53,11 @@ public class LoginController {
         Map<String, Object> map = new HashMap<>();
         map.put("token", jwtToken.getToken());
         log.info("[登录成功]-[{}]", username);
-        return ResultUtil.success("登录成功", map);
+        return CommonResult.success("登录成功", map);
+    }
+
+    @GetMapping("/login")
+    public CommonResult logout() {
+        return CommonResult.success("登出成功");
     }
 }

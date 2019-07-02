@@ -1,9 +1,6 @@
 package com.goufn.permission.controller;
 
-import com.goufn.permission.common.page.PageRequest;
-import com.goufn.permission.common.page.PageResult;
 import com.goufn.permission.common.result.CommonResult;
-import com.goufn.permission.common.result.ResultUtil;
 import com.goufn.permission.model.SysDept;
 import com.goufn.permission.service.DeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -21,26 +18,26 @@ public class DeptController {
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody SysDept record) {
         if (record == null) {
-            return ResultUtil.error("表格不能为空");
+            return CommonResult.error("表格不能为空");
         }
         if (record.getId() == 0) {
             deptService.save(record);
         } else {
             deptService.updateById(record);
         }
-        return ResultUtil.success(1);
+        return CommonResult.success();
     }
 
     @RequiresPermissions("sys:dept:delete")
     @PostMapping(value="/delete")
     public CommonResult delete(@RequestBody List<SysDept> records) {
-        return ResultUtil.success(deptService.delete(records));
+        return CommonResult.success(deptService.delete(records));
     }
 
     @RequiresPermissions("sys:dept:view")
     @GetMapping(value="/findTree")
     public CommonResult findTree(@RequestParam String name) {
-        return ResultUtil.success(deptService.findTree(name));
+        return CommonResult.success(deptService.findTree(name));
     }
 
 }

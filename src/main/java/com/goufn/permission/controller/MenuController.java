@@ -1,7 +1,6 @@
 package com.goufn.permission.controller;
 
 import com.goufn.permission.common.result.CommonResult;
-import com.goufn.permission.common.result.ResultUtil;
 import com.goufn.permission.model.SysMenu;
 import com.goufn.permission.service.MenuService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -19,7 +18,7 @@ public class MenuController {
     @PostMapping(value="/save")
     @RequiresPermissions({"sys:menu:add", "sys:menu:edit"})
     public CommonResult save(@RequestBody SysMenu record) {
-        return ResultUtil.success(menuService.save(record));
+        return CommonResult.success(menuService.save(record));
     }
 
     @PostMapping(value="/delete")
@@ -28,21 +27,21 @@ public class MenuController {
         for (SysMenu record : records) {
             menuService.removeById(record.getId());
         }
-        return ResultUtil.success(records.size());
+        return CommonResult.success(records.size());
     }
 
     @GetMapping("/findNavTree")
     @RequiresPermissions("sys:menu:view")
     public CommonResult findNavTree(@RequestParam String username) {
         List<SysMenu> menuList = menuService.findTree(username, 1, null);
-        return ResultUtil.success(menuList);
+        return CommonResult.success(menuList);
     }
 
     @GetMapping("/findMenuTree")
     @RequiresPermissions("sys:menu:view")
     public CommonResult findMenuTree(@RequestParam String name) {
         List<SysMenu> menuList = menuService.findTree(null, 0, name);
-        return ResultUtil.success(menuList);
+        return CommonResult.success(menuList);
     }
 
 }

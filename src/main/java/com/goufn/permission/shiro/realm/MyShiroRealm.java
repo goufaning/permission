@@ -48,9 +48,6 @@ public class MyShiroRealm extends AuthorizingRealm {
         Set<String> roles = roleService.findRoleByUserId(user.getId());
         Set<String> permissions = menuService.findPermsByUserId(user.getId());
         permissions = permissions.stream().filter(s -> s != null && !s.equals("")).collect(Collectors.toSet());
-        for (String permission : permissions) {
-            System.err.print(permission + " ");
-        }
         authorizationInfo.setRoles(roles);
         authorizationInfo.setStringPermissions(permissions);
         return authorizationInfo;

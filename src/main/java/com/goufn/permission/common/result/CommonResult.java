@@ -21,6 +21,22 @@ public class CommonResult<T> {
     /**
      * 成功返回结果
      *
+     */
+    public static <T> CommonResult<T> success() {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), null);
+    }
+
+    /**
+     * 成功返回结果
+     *
+     */
+    public static <T> CommonResult<T> success(String message) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, null);
+    }
+
+    /**
+     * 成功返回结果
+     *
      * @param data 获取的数据
      */
     public static <T> CommonResult<T> success(T data) {
@@ -33,15 +49,16 @@ public class CommonResult<T> {
      * @param data 获取的数据
      * @param  message 提示信息
      */
-    public static <T> CommonResult<T> success(T data, String message) {
+    public static <T> CommonResult<T> success(String message, T data) {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, data);
     }
+
 
     /**
      * 失败返回结果
      * @param errorCode 错误码
      */
-    public static <T> CommonResult<T> failed(IErrorCode errorCode) {
+    public static <T> CommonResult<T> error(IErrorCode errorCode) {
         return new CommonResult<T>(errorCode.getCode(), errorCode.getMessage(), null);
     }
 
@@ -49,22 +66,22 @@ public class CommonResult<T> {
      * 失败返回结果
      * @param message 提示信息
      */
-    public static <T> CommonResult<T> failed(String message) {
+    public static <T> CommonResult<T> error(String message) {
         return new CommonResult<T>(ResultCode.FAILED.getCode(), message, null);
     }
 
     /**
      * 失败返回结果
      */
-    public static <T> CommonResult<T> failed() {
-        return failed(ResultCode.FAILED);
+    public static <T> CommonResult<T> error() {
+        return error(ResultCode.FAILED);
     }
 
     /**
      * 参数验证失败返回结果
      */
     public static <T> CommonResult<T> validateFailed() {
-        return failed(ResultCode.VALIDATE_FAILED);
+        return error(ResultCode.VALIDATE_FAILED);
     }
 
     /**

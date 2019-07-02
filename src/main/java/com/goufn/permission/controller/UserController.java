@@ -2,7 +2,6 @@ package com.goufn.permission.controller;
 
 import com.goufn.permission.common.page.PageRequest;
 import com.goufn.permission.common.result.CommonResult;
-import com.goufn.permission.common.result.ResultUtil;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.service.UserService;
 import com.goufn.permission.utils.PasswordUtil;
@@ -24,14 +23,14 @@ public class UserController {
         SysUser user = userService.findById(record.getId());
         if(user != null) {
             if("admin".equalsIgnoreCase(user.getName())) {
-                return ResultUtil.error("超级管理员不允许修改!");
+                return CommonResult.error("超级管理员不允许修改!");
             }
         }
         if(record.getPassword() != null) {
             if(user == null) {
                 // 新增用户
                 if(userService.findByName(record.getName()) != null) {
-                    return ResultUtil.error("用户名已存在!");
+                    return CommonResult.error("用户名已存在!");
                 }
                 PasswordUtil.encryptPassword(record);
             } else {
@@ -41,7 +40,7 @@ public class UserController {
                 }
             }
         }
-        return ResultUtil.success(userService.save(record));
+        return CommonResult.success(userService.save(record));
     }
 
     @RequiresPermissions("sys:user:delete")
@@ -50,33 +49,33 @@ public class UserController {
         for(SysUser record : records) {
             SysUser sysUser = userService.findById(record.getId());
             if(sysUser != null && "admin".equalsIgnoreCase(sysUser.getName())) {
-                return ResultUtil.error("超级管理员不允许删除!");
+                return CommonResult.error("超级管理员不允许删除!");
             }
         }
-        return ResultUtil.success(userService.delete(records));
+        return CommonResult.success(userService.delete(records));
     }
 
     @RequiresPermissions("sys:user:view")
     @GetMapping(value="/findByName")
     public CommonResult findByUserName(@RequestParam String name) {
-        return ResultUtil.success(userService.findByName(name));
+        return CommonResult.success(userService.findByName(name));
     }
 
     @RequiresPermissions("sys:user:view")
     @GetMapping(value="/findPermissions")
     public CommonResult findPermissions(@RequestParam String name) {
-        return ResultUtil.success(userService.findPermissions(name));
+        return CommonResult.success(userService.findPermissions(name));
     }
 
     @RequiresPermissions("sys:user:view")
     @GetMapping(value="/findUserRoles")
     public CommonResult findUserRoles(@RequestParam Long userId) {
-        return ResultUtil.success(userService.findUserRoles(userId));
+        return CommonResult.success(userService.findUserRoles(userId));
     }
 
     @RequiresPermissions("sys:user:view")
     @PostMapping(value="/findPage")
     public CommonResult findPage(@RequestBody PageRequest pageRequest) {
-        return ResultUtil.success(userService.findPage(pageRequest));
+        return CommonResult.success(userService.findPage(pageRequest));
     }
 }
