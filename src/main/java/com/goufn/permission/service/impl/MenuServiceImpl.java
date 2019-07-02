@@ -1,11 +1,15 @@
 package com.goufn.permission.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.goufn.permission.model.SysDept;
 import com.goufn.permission.model.SysMenu;
 import com.goufn.permission.mapper.MenuMapper;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.service.MenuService;
 import com.goufn.permission.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,25 +39,44 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
     public Set<String> findPermsByUserId(long userId) {
         Set<String> perms = new HashSet<>();
         SysUser user = userService.findById(userId);
-        for (SysMenu sysMenu : findByUser(user.getName())) {
+        for (SysMenu sysMenu : findByUser(user.getName(), null)) {
             perms.add(sysMenu.getPerms());
         }
         return perms;
     }
 
     @Override
-    public List<SysMenu> findByUser(String userName) {
+    public List<SysMenu> findByUser(String userName, Wrapper<SysMenu> queryWrapper) {
         if (userName == null || "".equals(userName) || "admin".equals(userName)) {
-            return this.baseMapper.selectList(null);
+            return this.list(queryWrapper);
         }
         return baseMapper.findByUserName(userName);
     }
 
     @Override
-    public List<SysMenu> findTree(String userName, int menuType) {
+    public List<SysMenu> findTree(String userName, int menuType, String name) {
         List<SysMenu> sysMenus = new ArrayList<>();
-        List<SysMenu> permissions = findByUser(userName);
-        for (SysMenu permission : permissions) {
+        boolean isSearch = false;
+        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.like(SysMenu::getName, name);
+            isSearch = true;
+        }
+        List<SysMenu> menus = findByUser(userName, wrapper);
+        if (isSearch) {
+            // 子节点匹配但父节点没匹配 把父节点加入
+            List<SysMenu> needAddList = new ArrayList<>();
+            for (SysMenu menu : menus) {
+                if (menu.getParentId() != null && menu.getParentId() != 0) {
+                    SysMenu parent = getById(menu.getParentId());
+                    if (parent != null && !menus.contains(parent)) {
+                        needAddList.add(parent);
+                    }
+                }
+            }
+            menus.addAll(needAddList);
+        }
+        for (SysMenu permission : menus) {
             if (permission.getParentId() == null || permission.getParentId() == 0) {
                 permission.setLevel(0);
                 if (!exists(sysMenus, permission)) {
@@ -62,7 +85,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
             }
         }
         sysMenus.sort((o1, o2) -> o1.getOrderNum().compareTo(o2.getOrderNum()));
-        findChildren(sysMenus, permissions, menuType);
+        findChildren(sysMenus, menus, menuType);
         return sysMenus;
     }
 

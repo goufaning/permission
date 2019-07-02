@@ -1,5 +1,7 @@
 package com.goufn.permission.controller;
 
+import com.goufn.permission.common.page.PageRequest;
+import com.goufn.permission.common.page.PageResult;
 import com.goufn.permission.common.result.CommonResult;
 import com.goufn.permission.common.result.ResultUtil;
 import com.goufn.permission.model.SysDept;
@@ -35,10 +37,10 @@ public class DeptController {
         return ResultUtil.success(deptService.delete(records));
     }
 
-    @RequiresPermissions("hasAuthority('sys:dept:view')")
+    @RequiresPermissions("sys:dept:view")
     @GetMapping(value="/findTree")
-    public CommonResult findTree() {
-        return ResultUtil.success(deptService.findTree());
+    public CommonResult findTree(@RequestParam String name) {
+        return ResultUtil.success(deptService.findTree(name));
     }
 
 }

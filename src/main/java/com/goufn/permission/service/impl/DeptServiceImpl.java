@@ -1,5 +1,6 @@
 package com.goufn.permission.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,12 +8,11 @@ import com.goufn.permission.common.page.PageRequest;
 import com.goufn.permission.common.page.PageResult;
 import com.goufn.permission.model.SysDept;
 import com.goufn.permission.mapper.DeptMapper;
-import com.goufn.permission.model.SysUser;
 import com.goufn.permission.service.DeptService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Service
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, SysDept> implements DeptService {
@@ -37,9 +37,28 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, SysDept> implements
     }
 
     @Override
-    public List<SysDept> findTree() {
+    public List<SysDept> findTree(String name) {
         List<SysDept> sysDepts = new ArrayList<>();
-        List<SysDept> depts = baseMapper.selectList(null);
+        LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
+        boolean isSearch = false;
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.like(SysDept::getName, name);
+            isSearch = true;
+        }
+        List<SysDept> depts = this.list(wrapper);
+        if (isSearch) {
+            // 子节点匹配但父节点没匹配 把父节点加入
+            List<SysDept> needAddList = new ArrayList<>();
+            for (SysDept dept : depts) {
+                if (dept.getParentId() != null && dept.getParentId() != 0) {
+                    SysDept parent = getById(dept.getParentId());
+                    if (parent != null && !depts.contains(parent)) {
+                        needAddList.add(parent);
+                    }
+                }
+            }
+            depts.addAll(needAddList);
+        }
         for (SysDept dept : depts) {
             if (dept.getParentId() == null || dept.getParentId() == 0) {
                 dept.setLevel(0);

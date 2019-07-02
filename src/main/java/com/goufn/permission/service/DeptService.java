@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DeptService extends IService<SysDept> {
 
-    List<SysDept> findTree();
+    List<SysDept> findTree(String name);
 
     PageResult findPage(PageRequest pageRequest);
 

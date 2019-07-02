@@ -1,5 +1,6 @@
 package com.goufn.permission.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.goufn.permission.model.SysMenu;
 
@@ -10,7 +11,7 @@ public interface MenuService extends IService<SysMenu> {
 
     Set<String> findPermsByUserId(long userId);
 
-    List<SysMenu> findByUser(String userName);
+    List<SysMenu> findByUser(String userName, Wrapper<SysMenu> queryWrapper);
 
-    List<SysMenu> findTree(String userName, int menuType);
+    List<SysMenu> findTree(String userName, int menuType, String name);
 }

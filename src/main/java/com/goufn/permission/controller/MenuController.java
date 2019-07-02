@@ -34,14 +34,14 @@ public class MenuController {
     @GetMapping("/findNavTree")
     @RequiresPermissions("sys:menu:view")
     public CommonResult findNavTree(@RequestParam String username) {
-        List<SysMenu> menuList = menuService.findTree(username, 1);
+        List<SysMenu> menuList = menuService.findTree(username, 1, null);
         return ResultUtil.success(menuList);
     }
 
     @GetMapping("/findMenuTree")
     @RequiresPermissions("sys:menu:view")
-    public CommonResult findMenuTree() {
-        List<SysMenu> menuList = menuService.findTree(null, 0);
+    public CommonResult findMenuTree(@RequestParam String name) {
+        List<SysMenu> menuList = menuService.findTree(null, 0, name);
         return ResultUtil.success(menuList);
     }
 
