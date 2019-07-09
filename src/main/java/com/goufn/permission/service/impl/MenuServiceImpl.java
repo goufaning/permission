@@ -3,7 +3,6 @@ package com.goufn.permission.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.goufn.permission.model.SysDept;
 import com.goufn.permission.model.SysMenu;
 import com.goufn.permission.mapper.MenuMapper;
 import com.goufn.permission.model.SysUser;

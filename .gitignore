@@ -17,13 +17,11 @@ HELP.md
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-/build/
 
 ### VS Code ###
 .vscode/
+classes/
+log/
+src/test/
+#Ignore META-INF
+/src/main/java/META-INF/*
