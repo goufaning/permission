@@ -1,5 +1,6 @@
 package com.goufn.permission.controller;
 
+import com.goufn.permission.annotation.Log;
 import com.goufn.permission.common.page.PageRequest;
 import com.goufn.permission.common.result.CommonResult;
 import com.goufn.permission.model.SysUser;
@@ -17,6 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Log("新增/修改用户")
     @RequiresPermissions({"sys:user:add", "sys:user:edit"})
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody SysUser record) {
@@ -43,6 +45,7 @@ public class UserController {
         return CommonResult.success(userService.save(record));
     }
 
+    @Log("删除用户")
     @RequiresPermissions("sys:user:delete")
     @PostMapping(value="/delete")
     public CommonResult delete(@RequestBody List<SysUser> records) {
@@ -73,6 +76,7 @@ public class UserController {
         return CommonResult.success(userService.findUserRoles(userId));
     }
 
+    @Log("查看用户")
     @RequiresPermissions("sys:user:view")
     @PostMapping(value="/findPage")
     public CommonResult findPage(@RequestBody PageRequest pageRequest) {

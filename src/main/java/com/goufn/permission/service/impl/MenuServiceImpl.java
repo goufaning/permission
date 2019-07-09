@@ -3,6 +3,7 @@ package com.goufn.permission.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.goufn.permission.model.SysDept;
 import com.goufn.permission.model.SysMenu;
 import com.goufn.permission.mapper.MenuMapper;
 import com.goufn.permission.model.SysUser;
@@ -23,16 +24,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
     @Autowired
     private UserService userService;
 
-    @Override
-    public boolean save(SysMenu entity) {
-        if (entity.getParentId() == null) {
-            entity.setParentId(0L);
-        }
-        if (baseMapper.selectById(entity.getId()) != null) {
-            return super.updateById(entity);
-        }
-        return super.save(entity);
-    }
 
     @Override
     public Set<String> findPermsByUserId(long userId) {
@@ -64,16 +55,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
         List<SysMenu> menus = findByUser(userName, wrapper);
         if (isSearch) {
             // 子节点匹配但父节点没匹配 把父节点加入
-            List<SysMenu> needAddList = new ArrayList<>();
+            Set<SysMenu> menuSet = new HashSet<>();
             for (SysMenu menu : menus) {
-                if (menu.getParentId() != null && menu.getParentId() != 0) {
-                    SysMenu parent = getById(menu.getParentId());
+                SysMenu tempDept = menu;
+                while (tempDept != null && tempDept.getParentId() != null && tempDept.getParentId() != 0) {
+                    SysMenu parent = getById(tempDept.getParentId());
                     if (parent != null && !menus.contains(parent)) {
-                        needAddList.add(parent);
+                        menuSet.add(parent);
                     }
+                    tempDept = parent;
                 }
             }
-            menus.addAll(needAddList);
+            menus.addAll(menuSet);
         }
         for (SysMenu permission : menus) {
             if (permission.getParentId() == null || permission.getParentId() == 0) {

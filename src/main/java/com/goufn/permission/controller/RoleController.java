@@ -1,5 +1,6 @@
 package com.goufn.permission.controller;
 
+import com.goufn.permission.annotation.Log;
 import com.goufn.permission.common.page.PageRequest;
 import com.goufn.permission.common.result.CommonResult;
 import com.goufn.permission.jwt.JWTUtil;
@@ -23,6 +24,7 @@ public class RoleController {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Log("新增/修改角色")
     @RequiresPermissions({"sys:role:add", "sys:role:edit"})
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody SysRole record) {
@@ -51,6 +53,7 @@ public class RoleController {
         return CommonResult.success();
     }
 
+    @Log("删除角色")
     @RequiresPermissions("sys:role:delete")
     @PostMapping(value="/delete")
     public CommonResult delete(@RequestBody List<SysRole> records) {
@@ -76,7 +79,8 @@ public class RoleController {
         return CommonResult.success(roleService.findRoleMenus(roleId));
     }
 
-    @RequiresPermissions("sys:role:view")
+    @Log("修改角色权限")
+    @RequiresPermissions("sys:role:edit")
     @PostMapping(value="/saveRoleMenus")
     public CommonResult saveRoleMenus(@RequestBody List<SysRoleMenu> records) {
         for(SysRoleMenu record:records) {

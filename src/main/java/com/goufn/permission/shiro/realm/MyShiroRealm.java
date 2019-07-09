@@ -1,5 +1,6 @@
 package com.goufn.permission.shiro.realm;
 
+import com.goufn.permission.exception.TokenTimeoutException;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.jwt.JWTToken;
 import com.goufn.permission.jwt.JWTUtil;
@@ -67,7 +68,6 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
         // 这里的 token是从 JWTFilter 的 executeLogin 方法传递过来的，已经经过了解密
         String token = (String) authenticationToken.getCredentials();
 
@@ -81,7 +81,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             throw new UnknownAccountException();
         }
         if (!JWTUtil.verify(token, username, user.getPassword()))
-            throw new AuthenticationException("token校验不通过");
+            throw new TokenTimeoutException("token校验不通过");
         //认证信息里存放账号密码, getName() 是当前Realm的继承方法,通常返回当前类名 :databaseRealm
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 token,

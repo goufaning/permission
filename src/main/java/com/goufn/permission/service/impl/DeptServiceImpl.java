@@ -13,7 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 @Service
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, SysDept> implements DeptService {
 
@@ -48,16 +51,18 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, SysDept> implements
         List<SysDept> depts = this.list(wrapper);
         if (isSearch) {
             // 子节点匹配但父节点没匹配 把父节点加入
-            List<SysDept> needAddList = new ArrayList<>();
+            Set<SysDept> deptSet = new HashSet<>();
             for (SysDept dept : depts) {
-                if (dept.getParentId() != null && dept.getParentId() != 0) {
-                    SysDept parent = getById(dept.getParentId());
+                SysDept tempDept = dept;
+                while (tempDept != null && tempDept.getParentId() != null && tempDept.getParentId() != 0) {
+                    SysDept parent = getById(tempDept.getParentId());
                     if (parent != null && !depts.contains(parent)) {
-                        needAddList.add(parent);
+                        deptSet.add(parent);
                     }
+                    tempDept = parent;
                 }
             }
-            depts.addAll(needAddList);
+            depts.addAll(deptSet);
         }
         for (SysDept dept : depts) {
             if (dept.getParentId() == null || dept.getParentId() == 0) {

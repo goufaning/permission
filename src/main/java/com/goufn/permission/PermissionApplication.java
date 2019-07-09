@@ -1,10 +1,10 @@
 package com.goufn.permission;
 
-import com.goufn.permission.jwt.PermissionProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+@EnableAspectJAutoProxy
 @SpringBootApplication
 public class PermissionApplication {
 

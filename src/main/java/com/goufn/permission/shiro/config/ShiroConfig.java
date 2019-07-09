@@ -26,8 +26,8 @@ public class ShiroConfig {
          * 在@Controller注解的类的方法中加入@RequiresRole注解，会导致该方法无法映射请求，导致返回404。
          * 加入这项配置能解决这个bug
          */
-        creator.setProxyTargetClass(false);
-        creator.setUsePrefix(false);
+        creator.setProxyTargetClass(true);
+        creator.setUsePrefix(true);
         return creator;
     }
 

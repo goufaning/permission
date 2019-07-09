@@ -2,6 +2,7 @@ package com.goufn.permission.controller;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
+import com.goufn.permission.annotation.Log;
 import com.goufn.permission.common.result.CommonResult;
 import com.goufn.permission.model.SysUser;
 import com.goufn.permission.jwt.JWTToken;
@@ -52,12 +53,12 @@ public class LoginController {
         BufferedImage image = producer.createImage(text);
         // 保存到验证码到 session
         request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, text);
-        System.err.println(request.getSession().getId());
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
         out.close();
     }
 
+    @Log("登录")
     @PostMapping("login")
     public CommonResult login(@RequestBody LoginBean loginBean, HttpServletRequest request) {
         String username = loginBean.getName();
@@ -65,7 +66,6 @@ public class LoginController {
         String captcha = loginBean.getCaptcha();
         // 从session中获取之前保存的验证码跟前台传来的验证码进行匹配
         Object kaptcha = request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        System.err.println(request.getSession().getId());
         if(kaptcha == null){
             return CommonResult.error("验证码已失效");
         }
@@ -90,6 +90,7 @@ public class LoginController {
         return CommonResult.success("登录成功", map);
     }
 
+    @Log("登出")
     @GetMapping("/logout")
     public CommonResult logout() {
         return CommonResult.success("登出成功");
