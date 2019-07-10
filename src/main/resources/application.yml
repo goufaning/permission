@@ -8,6 +8,9 @@ spring:
     cache: false
   aop:
     proxy-target-class:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 management:
   endpoints:
     web:
