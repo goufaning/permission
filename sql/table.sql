@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
 
-Date: 2019-07-09 17:50:07
+Date: 2019-07-10 17:52:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -92,11 +92,23 @@ CREATE TABLE `sys_log` (
   `last_update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
   `last_update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统日志';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='系统日志';
 
 -- ----------------------------
 -- Records of sys_log
 -- ----------------------------
+INSERT INTO `sys_log` VALUES ('1', 'admin', '查看用户', 'com.goufn.permission.controller.UserController.findPage()', '{\"columnFilters\":{\"name\":{\"name\":\"name\",\"value\":\"\"}},\"pageNum\":1,\"pageSize\":10}', '1202', '0:0:0:0:0:0:0:1', 'admin', '2019-07-09 04:58:04', 'admin', '2019-07-09 04:58:04');
+INSERT INTO `sys_log` VALUES ('2', '', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"y2eb4\",\"name\":\"admin\",\"password\":\"123456\"}', '638', '0:0:0:0:0:0:0:1', '', '2019-07-09 21:50:00', '', '2019-07-09 21:50:00');
+INSERT INTO `sys_log` VALUES ('3', '', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"bny44\",\"name\":\"admin\",\"password\":\"123456\"}', '421', '0:0:0:0:0:0:0:1', '', '2019-07-10 00:34:10', '', '2019-07-10 00:34:10');
+INSERT INTO `sys_log` VALUES ('4', '', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"p6cx2\",\"name\":\"admin\",\"password\":\"123456\"}', '173', '0:0:0:0:0:0:0:1', '', '2019-07-10 02:15:32', '', '2019-07-10 02:15:32');
+INSERT INTO `sys_log` VALUES ('5', 'admin', '查看用户', 'com.goufn.permission.controller.UserController.findPage()', '{\"columnFilters\":{\"name\":{\"name\":\"name\",\"value\":\"\"}},\"pageNum\":1,\"pageSize\":10}', '897', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 02:51:36', 'admin', '2019-07-10 02:51:36');
+INSERT INTO `sys_log` VALUES ('6', 'admin', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"a74p8\",\"name\":\"admin\",\"password\":\"123456\"}', '108', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 03:13:27', 'admin', '2019-07-10 03:13:27');
+INSERT INTO `sys_log` VALUES ('7', 'admin', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"gxce5\",\"name\":\"admin\",\"password\":\"123456\"}', '216', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:15:54', 'admin', '2019-07-10 04:15:54');
+INSERT INTO `sys_log` VALUES ('8', 'admin', '查看用户', 'com.goufn.permission.controller.UserController.findPage()', '{\"columnFilters\":{\"name\":{\"name\":\"name\",\"value\":\"\"}},\"pageNum\":1,\"pageSize\":10}', '779', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:41:53', 'admin', '2019-07-10 04:41:53');
+INSERT INTO `sys_log` VALUES ('9', 'admin', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"g2e85\",\"name\":\"admin\",\"password\":\"123456\"}', '108', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:43:17', 'admin', '2019-07-10 04:43:17');
+INSERT INTO `sys_log` VALUES ('10', 'admin', '登录', 'com.goufn.permission.controller.LoginController.login()', '{\"captcha\":\"f7d27\",\"name\":\"admin\",\"password\":\"123456\"}', '108', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:44:33', 'admin', '2019-07-10 04:44:33');
+INSERT INTO `sys_log` VALUES ('11', 'admin', '新增/修改菜单', 'com.goufn.permission.controller.MenuController.save()', '{\"children\":[],\"delFlag\":0,\"icon\":\"el-icon-date\",\"id\":48,\"level\":1,\"name\":\"Tomcat信息\",\"orderNum\":3,\"parentId\":43,\"parentName\":\"系统监控\",\"perms\":\"\",\"type\":1,\"url\":\"/monitor/tomcat\"}', '106', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:45:27', 'admin', '2019-07-10 04:45:27');
+INSERT INTO `sys_log` VALUES ('12', 'admin', '新增/修改菜单', 'com.goufn.permission.controller.MenuController.save()', '{\"children\":[],\"delFlag\":0,\"icon\":\"el-icon-set-up\",\"id\":47,\"level\":1,\"name\":\"jvm信息\",\"orderNum\":2,\"parentId\":43,\"parentName\":\"系统监控\",\"perms\":\"\",\"type\":1,\"url\":\"/monitor/jvm\"}', '79', '0:0:0:0:0:0:0:1', 'admin', '2019-07-10 04:46:03', 'admin', '2019-07-10 04:46:03');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -127,9 +139,8 @@ INSERT INTO `sys_menu` VALUES ('2', '用户管理', '1', '/sys/user', '', '1', '
 INSERT INTO `sys_menu` VALUES ('3', '机构管理', '1', '/sys/dept', '', '1', 'el-icon-news', '2', null, null, null, null, '0');
 INSERT INTO `sys_menu` VALUES ('4', '角色管理', '1', '/sys/role', '', '1', 'el-icon-view', '4', null, null, null, null, '0');
 INSERT INTO `sys_menu` VALUES ('5', '菜单管理', '1', '/sys/menu', '', '1', 'el-icon-menu', '5', null, null, null, null, '0');
-INSERT INTO `sys_menu` VALUES ('6', '数据监控', '43', 'http://139.196.87.48:8001/druid/login.html', '', '1', 'el-icon-warning', '0', null, null, 'admin', '2018-12-27 11:03:45', '0');
-INSERT INTO `sys_menu` VALUES ('7', '字典管理', '1', '/sys/dict', '', '1', 'el-icon-edit-outline', '7', null, null, null, null, '0');
-INSERT INTO `sys_menu` VALUES ('8', '系统日志', '43', '/sys/log', 'sys:log:view', '1', 'el-icon-info', '8', null, null, 'admin', '2018-09-23 19:32:28', '0');
+INSERT INTO `sys_menu` VALUES ('7', '字典管理', '1', '/sys/dict', '', '1', 'el-icon-collection', '7', null, null, null, null, '0');
+INSERT INTO `sys_menu` VALUES ('8', '系统日志', '43', '/sys/log', 'sys:log:view', '1', 'el-icon-tickets', '8', null, null, 'admin', '2018-09-23 19:32:28', '0');
 INSERT INTO `sys_menu` VALUES ('9', '查看', '2', null, 'sys:user:view', '2', null, '0', null, null, null, null, '0');
 INSERT INTO `sys_menu` VALUES ('10', '新增', '2', null, 'sys:user:add', '2', null, '0', null, null, null, null, '0');
 INSERT INTO `sys_menu` VALUES ('11', '修改', '2', null, 'sys:user:edit', '2', null, '0', null, null, null, null, '0');
@@ -154,9 +165,9 @@ INSERT INTO `sys_menu` VALUES ('35', 'icon图标', '0', '/icon/index', '', '1', 
 INSERT INTO `sys_menu` VALUES ('38', '服务监控', '43', 'http://139.196.87.48:8000/', '', '1', 'el-icon-view', '1', 'admin', '2018-11-02 20:02:15', 'admin', '2018-12-27 11:03:53', '0');
 INSERT INTO `sys_menu` VALUES ('43', '系统监控', '0', '', '', '0', 'el-icon-info', '2', 'admin', '2018-12-27 10:57:29', 'admin', '2018-12-27 11:02:26', '0');
 INSERT INTO `sys_menu` VALUES ('46', '系统主页', '0', '/', '', '1', 'el-icon-monitor', '0', null, null, null, null, '0');
-INSERT INTO `sys_menu` VALUES ('47', 'jvm信息', '43', '/monitor/jvm', '', '1', 'el-icon-document', '2', null, null, null, null, '0');
-INSERT INTO `sys_menu` VALUES ('48', 'Tomcat信息', '43', '/monitor/tomcat', '', '1', 'el-icon-warning', '3', null, null, null, null, '0');
-INSERT INTO `sys_menu` VALUES ('49', '系统信息', '43', '/monitor/system', '', '1', 'el-icon-warning', '4', null, null, null, null, '0');
+INSERT INTO `sys_menu` VALUES ('47', 'jvm信息', '43', '/monitor/jvm', '', '1', 'el-icon-set-up', '2', null, null, null, null, '0');
+INSERT INTO `sys_menu` VALUES ('48', 'Tomcat信息', '43', '/monitor/tomcat', '', '1', 'el-icon-date', '3', null, null, null, null, '0');
+INSERT INTO `sys_menu` VALUES ('49', '系统信息', '43', '/monitor/system', '', '1', 'el-icon-cpu', '4', null, null, null, null, '0');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -292,7 +303,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', 'e9e38f4785af638faee697314387606d', '8A0SUW+RWGipDZgEevhplg==', 'admin@qq.com', '13612345678', '1', '4', 'admin', '2018-08-14 11:11:11', 'admin', '2019-07-09 04:23:24', '0');
+INSERT INTO `sys_user` VALUES ('1', 'admin', 'e9e38f4785af638faee697314387606d', '8A0SUW+RWGipDZgEevhplg==', 'admin@qq.com', '13612345678', '1', '4', 'admin', '2018-08-14 11:11:11', 'admin', '2019-07-10 04:44:33', '0');
 INSERT INTO `sys_user` VALUES ('23', '赵云', 'fd80ebd493a655608dc893a9f897d845', 'YzcmCZNvbXocrsz9dm8e', 'test@qq.com', '13889700023', '1', '29', 'admin', '2018-09-23 19:43:44', 'admin', '2018-09-23 19:43:52', '0');
 INSERT INTO `sys_user` VALUES ('24', '诸葛亮', 'fd80ebd493a655608dc893a9f897d845', 'YzcmCZNvbXocrsz9dm8e', 'st@qq.com', '13889700023', '1', '26', 'admin', '2018-09-23 19:44:23', 'admin', '2018-09-23 19:44:29', '0');
 INSERT INTO `sys_user` VALUES ('25', '曹操', 'fd80ebd493a655608dc893a9f897d845', 'YzcmCZNvbXocrsz9dm8e', 'test@qq.com', '13889700023', '1', '33', 'admin', '2018-09-23 19:45:32', 'admin', '2018-09-23 19:45:37', '0');
@@ -317,7 +328,7 @@ CREATE TABLE `sys_user_role` (
   `last_update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
   `last_update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8 COMMENT='用户角色';
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COMMENT='用户角色';
 
 -- ----------------------------
 -- Records of sys_user_role
