@@ -58,7 +58,6 @@ public class LoginController {
         out.close();
     }
 
-    @Log("登录")
     @PostMapping("login")
     public CommonResult login(@RequestBody LoginBean loginBean, HttpServletRequest request) {
         String username = loginBean.getName();
