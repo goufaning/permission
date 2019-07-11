@@ -11,7 +11,7 @@ permission是一款前后端分离的后台权限管理系统，基于Spring Boo
 
 |        | 后端源码                                                     | 前端源码                                                     |
 | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| github | [https://github.com/goufaning/permission]([https://github.com/goufaning/permission) | [https://github.com/goufaning/permission-app](https://github.com/goufaning/permission-app) |
+| github | [https://github.com/goufaning/permission](https://github.com/goufaning/permission) | [https://github.com/goufaning/permission-app](https://github.com/goufaning/permission-app) |
 
 ### 演示地址
 
