@@ -6,6 +6,7 @@
     <artifactId>permission</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>permission</name>
+    <packaging>jar</packaging>
     <description>Shiro 权限管理系统</description>
 
     <parent>
@@ -128,8 +129,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.goufn.permission.PermissionApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
