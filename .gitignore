@@ -23,5 +23,6 @@ HELP.md
 classes/
 log/
 src/test/
+.mvn/
 #Ignore META-INF
 /src/main/java/META-INF/*
