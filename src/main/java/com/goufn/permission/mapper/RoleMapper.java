@@ -12,6 +12,4 @@ import java.util.Set;
 @Mapper
 public interface RoleMapper extends BaseMapper<SysRole> {
 
-    Set<String> findRoleByUserId(long userId);
-
 }

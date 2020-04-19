@@ -11,19 +11,4 @@ import java.util.Set;
 @Repository
 @Mapper
 public interface MenuMapper extends BaseMapper<SysMenu> {
-
-    /**
-     * 根据用户id查询资源集合
-     *
-     * @param roleId
-     * @return set
-     */
-    List<SysMenu> findByRoleId(Long roleId);
-
-    /**
-     * 查询用户按钮
-     * @param username
-     * @return
-     */
-    List<SysMenu> findByUserName(String username);
 }

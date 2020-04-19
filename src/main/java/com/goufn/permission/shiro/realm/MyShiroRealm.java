@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MyShiroRealm extends AuthorizingRealm {
+
     @Autowired
     private RoleService roleService;
     @Autowired
@@ -72,16 +73,19 @@ public class MyShiroRealm extends AuthorizingRealm {
         String token = (String) authenticationToken.getCredentials();
 
         String username = JWTUtil.getUsername(token);
-        if (StringUtils.isBlank(username))
+        if (StringUtils.isBlank(username)) {
             throw new AuthenticationException("token校验不通过");
+        }
+
 
         // 通过用户名查询用户信息
         SysUser user = userService.findByName(username);
         if(user == null){
             throw new UnknownAccountException();
         }
-        if (!JWTUtil.verify(token, username, user.getPassword()))
+        if (!JWTUtil.verify(token, username, user.getPassword())) {
             throw new TokenTimeoutException("token校验不通过");
+        }
         //认证信息里存放账号密码, getName() 是当前Realm的继承方法,通常返回当前类名 :databaseRealm
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 token,

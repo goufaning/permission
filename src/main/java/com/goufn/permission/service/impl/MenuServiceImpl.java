@@ -3,11 +3,16 @@ package com.goufn.permission.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.goufn.permission.mapper.RoleMenuMapper;
+import com.goufn.permission.mapper.UserMapper;
+import com.goufn.permission.mapper.UserRoleMapper;
 import com.goufn.permission.model.SysDept;
 import com.goufn.permission.model.SysMenu;
 import com.goufn.permission.mapper.MenuMapper;
 import com.goufn.permission.model.SysUser;
+import com.goufn.permission.model.SysUserRole;
 import com.goufn.permission.service.MenuService;
+import com.goufn.permission.service.RoleService;
 import com.goufn.permission.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +22,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements MenuService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+    @Autowired
+    private RoleService roleService;
 
 
     @Override
@@ -40,7 +53,17 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
         if (userName == null || "".equals(userName) || "admin".equals(userName)) {
             return this.list(queryWrapper);
         }
-        return baseMapper.findByUserName(userName);
+        SysUser sysUser = userMapper.selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getName, userName));
+        if (sysUser == null) {
+            return new ArrayList<>();
+        }
+        List<SysUserRole> sysUserRoles = userRoleMapper.selectList(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, sysUser.getId()));
+        List<Long> roldIds = sysUserRoles.stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
+        List<SysMenu> result = new ArrayList<>();
+        for (Long roldId : roldIds) {
+            result.addAll(roleService.findRoleMenus(roldId));
+        }
+        return result;
     }
 
     @Override
