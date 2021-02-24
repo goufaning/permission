@@ -177,6 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         return userRoleMapper.selectList(wrapper);
     }
 
+    @Override
     public int delete(List<SysUser> users) {
         for (SysUser user : users) {
             removeById(user.getId());

@@ -18,10 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,61 +65,71 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, SysMenu> implements
 
     @Override
     public List<SysMenu> findTree(String userName, int menuType, String name) {
-        List<SysMenu> sysMenus = new ArrayList<>();
+        List<SysMenu> resultMenus = new ArrayList<>();
+        // 是否是匹配name查询
         boolean isSearch = false;
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
         if (!StringUtils.isEmpty(name)) {
             wrapper.like(SysMenu::getName, name);
             isSearch = true;
         }
-        List<SysMenu> menus = findByUser(userName, wrapper);
+        List<SysMenu> findMenus = findByUser(userName, wrapper);
         if (isSearch) {
             // 子节点匹配但父节点没匹配 把父节点加入
             Set<SysMenu> menuSet = new HashSet<>();
-            for (SysMenu menu : menus) {
-                SysMenu tempDept = menu;
-                while (tempDept != null && tempDept.getParentId() != null && tempDept.getParentId() != 0) {
-                    SysMenu parent = getById(tempDept.getParentId());
-                    if (parent != null && !menus.contains(parent)) {
+            for (SysMenu menu : findMenus) {
+                SysMenu tempMenu = menu;
+                while (tempMenu != null && tempMenu.getParentId() != null && tempMenu.getParentId() != 0) {
+                    SysMenu parent = getById(tempMenu.getParentId());
+                    // 如果没有加入父节点，加入
+                    if (parent != null && !findMenus.contains(parent)) {
                         menuSet.add(parent);
                     }
-                    tempDept = parent;
+                    tempMenu = parent;
                 }
             }
-            menus.addAll(menuSet);
+            findMenus.addAll(menuSet);
         }
-        for (SysMenu permission : menus) {
-            if (permission.getParentId() == null || permission.getParentId() == 0) {
-                permission.setLevel(0);
-                if (!exists(sysMenus, permission)) {
-                    sysMenus.add(permission);
+        // 为顶级父节点设置level=0,并加入到结果集中
+        for (SysMenu menu : findMenus) {
+            if (menu.getParentId() == null || menu.getParentId() == 0) {
+                menu.setLevel(0);
+                if (!exists(resultMenus, menu)) {
+                    resultMenus.add(menu);
                 }
             }
         }
-        sysMenus.sort((o1, o2) -> o1.getOrderNum().compareTo(o2.getOrderNum()));
-        findChildren(sysMenus, menus, menuType);
-        return sysMenus;
+        // 升序排序
+        resultMenus.sort(Comparator.comparing(SysMenu::getOrderNum));
+        findChildren(resultMenus, findMenus, menuType);
+        return resultMenus;
     }
 
-    private void findChildren(List<SysMenu> sysMenus, List<SysMenu> permissions, int menuType) {
-        for (SysMenu permission : sysMenus) {
+    /**
+     * 从chooseMenus挑选parentMenus中菜单的子菜单
+     * @param parentMenus
+     * @param chooseMenus
+     * @param menuType
+     */
+    private void findChildren(List<SysMenu> parentMenus, List<SysMenu> chooseMenus, int menuType) {
+        for (SysMenu parentMenu : parentMenus) {
             List<SysMenu> children = new ArrayList<>();
-            for (SysMenu menu : permissions) {
-                if(menuType == 1 && menu.getType() == 2) {
+            for (SysMenu menu : chooseMenus) {
+                if(menu.getType() != menuType && menu.getType() == 2) {
                     // 如果是获取类型不需要按钮，且菜单类型是按钮的，直接过滤掉
                     continue ;
                 }
-                if (permission.getId() != null && permission.getId().equals(menu.getParentId())) {
-                    menu.setParentName(permission.getName());
-                    menu.setLevel(permission.getLevel() + 1);
+                if (parentMenu.getId() != null && parentMenu.getId().equals(menu.getParentId())) {
+                    menu.setParentName(parentMenu.getName());
+                    menu.setLevel(parentMenu.getLevel() + 1);
                     if(!exists(children, menu)) {
                         children.add(menu);
                     }
                 }
             }
-            permission.setChildren(children);
-            children.sort((o1, o2) -> o1.getOrderNum().compareTo(o2.getOrderNum()));
-            findChildren(children, permissions, menuType);
+            parentMenu.setChildren(children);
+            children.sort(Comparator.comparing(SysMenu::getOrderNum));
+            findChildren(children, chooseMenus, menuType);
         }
     }
 

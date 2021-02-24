@@ -14,6 +14,7 @@ public interface UserService extends IService<SysUser> {
 
     PageResult findPage(PageRequest pageRequest);
 
+
     int delete(List<SysUser> users);
 
     /**

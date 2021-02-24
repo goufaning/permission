@@ -1,8 +1,10 @@
 package com.goufn.permission.jwt;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.shiro.authc.AuthenticationToken;
 @Data
+@AllArgsConstructor
 public class JWTToken implements AuthenticationToken {
     private String token;
 
@@ -10,11 +12,6 @@ public class JWTToken implements AuthenticationToken {
 
     public JWTToken(String token) {
         this.token = token;
-    }
-
-    public JWTToken(String token, String exipreAt) {
-        this.token = token;
-        this.exipreAt = exipreAt;
     }
 
     @Override

@@ -2,11 +2,17 @@ package com.goufn.permission.common.result;
 
 /**
  * 通用返回对象
- * Created by macro on 2019/4/19.
+ *
+ * @author goufn
+ * @version V1.0
+ * @date 2020-07-09 14:18
  */
 public class CommonResult<T> {
+    /** 返回码 */
     private long code;
+    /** 返回信息 */
     private String msg;
+    /** 返回数据 */
     private T data;
 
     protected CommonResult() {
@@ -130,3 +136,4 @@ public class CommonResult<T> {
         this.data = data;
     }
 }
+

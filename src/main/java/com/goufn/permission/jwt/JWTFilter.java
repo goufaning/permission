@@ -40,8 +40,10 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         String[] anonUrls = anonUrl.split(StringPool.COMMA);
         boolean match = false;
         for (String u : anonUrls) {
-            if (pathMatcher.match(u, httpServletRequest.getRequestURI()))
+            if (pathMatcher.match(u, httpServletRequest.getRequestURI())) {
                 match = true;
+                break;
+            }
         }
         if (match) {
             return true;
